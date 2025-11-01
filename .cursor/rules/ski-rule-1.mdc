@@ -1,0 +1,6 @@
+---
+alwaysApply: true
+---
+Always create and maintain a README.md file for the entire project in the project root folder and ensure it has clear instructions on how to setup the environment, install dependencies and run the application locally.
+
+When executing steps within a tasks list or a plan always consider all cursor rules, agent context data. Then for each step execute it, summarize what was done in the step, display what you will do in next step and ask for explicit permission before executing next step.
