@@ -1,0 +1,922 @@
+
+> frontend@0.1.0 test
+> jest --passWithNoTests test
+
+FAIL tests/components/__tests__/UploadProgress.test.tsx
+  ● UploadProgress component › should render progress correctly
+
+    useUploadContext must be used within an UploadProvider
+
+      362 |   const context = useContext(UploadContext);
+      363 |   if (context === undefined) {
+    > 364 |     throw new Error('useUploadContext must be used within an UploadProvider');
+          |           ^
+      365 |   }
+      366 |   return context;
+      367 | }
+
+      at useUploadContext (src/context/UploadContext.tsx:364:11)
+      at UploadProgress (src/components/DocumentUpload/UploadProgress.tsx:11:77)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at customRender (tests/utils/test-utils.tsx:22:12)
+      at Object.<anonymous> (tests/components/__tests__/UploadProgress.test.tsx:40:17)
+
+  ● UploadProgress component › should display file status correctly
+
+    useUploadContext must be used within an UploadProvider
+
+      362 |   const context = useContext(UploadContext);
+      363 |   if (context === undefined) {
+    > 364 |     throw new Error('useUploadContext must be used within an UploadProvider');
+          |           ^
+      365 |   }
+      366 |   return context;
+      367 | }
+
+      at useUploadContext (src/context/UploadContext.tsx:364:11)
+      at UploadProgress (src/components/DocumentUpload/UploadProgress.tsx:11:77)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at customRender (tests/utils/test-utils.tsx:22:12)
+      at Object.<anonymous> (tests/components/__tests__/UploadProgress.test.tsx:50:17)
+
+  ● UploadProgress component › should display chunks count for completed files
+
+    useUploadContext must be used within an UploadProvider
+
+      362 |   const context = useContext(UploadContext);
+      363 |   if (context === undefined) {
+    > 364 |     throw new Error('useUploadContext must be used within an UploadProvider');
+          |           ^
+      365 |   }
+      366 |   return context;
+      367 | }
+
+      at useUploadContext (src/context/UploadContext.tsx:364:11)
+      at UploadProgress (src/components/DocumentUpload/UploadProgress.tsx:11:77)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at customRender (tests/utils/test-utils.tsx:22:12)
+      at Object.<anonymous> (tests/components/__tests__/UploadProgress.test.tsx:59:17)
+
+FAIL tests/components/__tests__/Header.test.tsx
+  ● Header component › should render airplane icon
+
+    TestingLibraryElementError: Unable to find a label with the text of: Airplane icon
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"bg-white/80 backdrop-blur-lg border-b border-white/50 shadow-lg"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"container mx-auto px-4 py-4 flex items-center justify-between gap-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-3"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex-shrink-0"[39m
+              [36m>[39m
+                [36m<img[39m
+                  [33malt[39m=[32m"Airplane icon"[39m
+                  [33mclass[39m=[32m"w-11 h-11"[39m
+                  [33mdata-nimg[39m=[32m"1"[39m
+                  [33mdecoding[39m=[32m"async"[39m
+                  [33mheight[39m=[32m"44"[39m
+                  [33msrc[39m=[32m"/airplane.svg"[39m
+                  [33mstyle[39m=[32m"color: transparent;"[39m
+                  [33mwidth[39m=[32m"44"[39m
+                [36m/>[39m
+              [36m</div>[39m
+              [36m<h1[39m
+                [33mclass[39m=[32m"text-2xl font-bold text-gray-900 drop-shadow-sm"[39m
+              [36m>[39m
+                [0mThe Aerospace Company Customer Service Agent[0m
+              [36m</h1>[39m
+            [36m</div>[39m
+            [36m<nav[39m
+              [33mclass[39m=[32m"flex items-center gap-3"[39m
+            [36m>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"px-4 py-2 rounded-lg font-semibold transition-colors border border-transparent shadow-sm bg-primary text-white hover:bg-primary-dark"[39m
+                [33mhref[39m=[32m"/"[39m
+              [36m>[39m
+                [0mChat[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"px-4 py-2 rounded-lg font-semibold transition-colors border border-transparent shadow-sm bg-white/70 text-gray-700 hover:bg-white border-white/60"[39m
+                [33mhref[39m=[32m"/upload"[39m
+              [36m>[39m
+                [0mUpload Documents[0m
+              [36m</a>[39m
+            [36m</nav>[39m
+          [36m</div>[39m
+        [36m</header>[39m
+      [36m</div>[39m
+    [36m</body>[39m
+
+      17 |     render(<Header />)
+      18 |
+    > 19 |     const icon = screen.getByLabelText('Airplane icon')
+         |                         ^
+      20 |     expect(icon).toBeInTheDocument()
+      21 |   })
+      22 |
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at getAllByLabelText (node_modules/@testing-library/dom/dist/queries/label-text.js:111:38)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByLabelText (tests/components/__tests__/Header.test.tsx:19:25)
+
+FAIL tests/components/__tests__/FileUploader.test.tsx
+  ● FileUploader component › should render upload area correctly
+
+    useUploadContext must be used within an UploadProvider
+
+      362 |   const context = useContext(UploadContext);
+      363 |   if (context === undefined) {
+    > 364 |     throw new Error('useUploadContext must be used within an UploadProvider');
+          |           ^
+      365 |   }
+      366 |   return context;
+      367 | }
+
+      at useUploadContext (src/context/UploadContext.tsx:364:11)
+      at FileUploader (src/components/DocumentUpload/FileUploader.tsx:12:40)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at customRender (tests/utils/test-utils.tsx:22:12)
+      at Object.<anonymous> (tests/components/__tests__/FileUploader.test.tsx:17:17)
+
+  ● FileUploader component › should handle file input change
+
+    useUploadContext must be used within an UploadProvider
+
+      362 |   const context = useContext(UploadContext);
+      363 |   if (context === undefined) {
+    > 364 |     throw new Error('useUploadContext must be used within an UploadProvider');
+          |           ^
+      365 |   }
+      366 |   return context;
+      367 | }
+
+      at useUploadContext (src/context/UploadContext.tsx:364:11)
+      at FileUploader (src/components/DocumentUpload/FileUploader.tsx:12:40)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at customRender (tests/utils/test-utils.tsx:22:12)
+      at Object.<anonymous> (tests/components/__tests__/FileUploader.test.tsx:25:17)
+
+  ● FileUploader component › should handle drag and drop
+
+    useUploadContext must be used within an UploadProvider
+
+      362 |   const context = useContext(UploadContext);
+      363 |   if (context === undefined) {
+    > 364 |     throw new Error('useUploadContext must be used within an UploadProvider');
+          |           ^
+      365 |   }
+      366 |   return context;
+      367 | }
+
+      at useUploadContext (src/context/UploadContext.tsx:364:11)
+      at FileUploader (src/components/DocumentUpload/FileUploader.tsx:12:40)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at customRender (tests/utils/test-utils.tsx:22:12)
+      at Object.<anonymous> (tests/components/__tests__/FileUploader.test.tsx:38:17)
+
+FAIL tests/components/__tests__/FilePreview.test.tsx
+  ● FilePreview component › should render empty state when no files
+
+    useUploadContext must be used within an UploadProvider
+
+      362 |   const context = useContext(UploadContext);
+      363 |   if (context === undefined) {
+    > 364 |     throw new Error('useUploadContext must be used within an UploadProvider');
+          |           ^
+      365 |   }
+      366 |   return context;
+      367 | }
+
+      at useUploadContext (src/context/UploadContext.tsx:364:11)
+      at FilePreview (src/components/DocumentUpload/FilePreview.tsx:11:71)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at customRender (tests/utils/test-utils.tsx:22:12)
+      at Object.<anonymous> (tests/components/__tests__/FilePreview.test.tsx:17:39)
+
+FAIL tests/components/__tests__/KnowledgeBaseSelector.test.tsx
+  ● KnowledgeBaseSelector component › should render selector correctly
+
+    useUploadContext must be used within an UploadProvider
+
+      362 |   const context = useContext(UploadContext);
+      363 |   if (context === undefined) {
+    > 364 |     throw new Error('useUploadContext must be used within an UploadProvider');
+          |           ^
+      365 |   }
+      366 |   return context;
+      367 | }
+
+      at useUploadContext (src/context/UploadContext.tsx:364:11)
+      at KnowledgeBaseSelector (src/components/DocumentUpload/KnowledgeBaseSelector.tsx:19:64)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at customRender (tests/utils/test-utils.tsx:22:12)
+      at Object.<anonymous> (tests/components/__tests__/KnowledgeBaseSelector.test.tsx:24:17)
+
+  ● KnowledgeBaseSelector component › should load and display collections
+
+    useUploadContext must be used within an UploadProvider
+
+      362 |   const context = useContext(UploadContext);
+      363 |   if (context === undefined) {
+    > 364 |     throw new Error('useUploadContext must be used within an UploadProvider');
+          |           ^
+      365 |   }
+      366 |   return context;
+      367 | }
+
+      at useUploadContext (src/context/UploadContext.tsx:364:11)
+      at KnowledgeBaseSelector (src/components/DocumentUpload/KnowledgeBaseSelector.tsx:19:64)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at customRender (tests/utils/test-utils.tsx:22:12)
+      at Object.<anonymous> (tests/components/__tests__/KnowledgeBaseSelector.test.tsx:32:17)
+
+PASS tests/components/__tests__/MessageList.test.tsx
+  ● Console
+
+    console.log
+      [MessageList] Messages updated: { count: 0, streamingStatus: false, messages: [] }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: []
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+    console.log
+      [MessageList] Messages updated: { count: 0, streamingStatus: false, messages: [] }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: []
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+    console.log
+      [MessageList] Rendering assistant message: {
+        id: 'msg-1762089008622-0.7714738480868535',
+        contentLength: 9,
+        preview: 'Hi there!'
+      }
+
+      at log (src/components/ChatInterface/MessageList.tsx:67:21)
+          at Array.map (<anonymous>)
+
+    console.log
+      [MessageList] Messages updated: {
+        count: 2,
+        streamingStatus: false,
+        messages: [
+          {
+            id: 'msg-1762089008622-0.5611193462939337',
+            role: 'user',
+            contentLength: 5,
+            hasContent: true,
+            contentIsEmpty: false,
+            preview: 'Hello',
+            fullContent: 'Hello'
+          },
+          {
+            id: 'msg-1762089008622-0.7714738480868535',
+            role: 'assistant',
+            contentLength: 9,
+            hasContent: true,
+            contentIsEmpty: false,
+            preview: 'Hi there!',
+            fullContent: 'Hi there!'
+          }
+        ]
+      }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: [
+        {
+          id: 'msg-1762089008622-0.7714738480868535',
+          contentLength: 9,
+          content: 'Hi there!',
+          preview: 'Hi there!'
+        }
+      ]
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+    console.log
+      [MessageList] Messages updated: { count: 0, streamingStatus: false, messages: [] }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: []
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+    console.log
+      [MessageList] Rendering assistant message: {
+        id: 'msg-1762089008854-0.8245165920468283',
+        contentLength: 9,
+        preview: 'Hi there!'
+      }
+
+      at log (src/components/ChatInterface/MessageList.tsx:67:21)
+          at Array.map (<anonymous>)
+
+    console.log
+      [MessageList] Messages updated: {
+        count: 2,
+        streamingStatus: false,
+        messages: [
+          {
+            id: 'msg-1762089008853-0.4238320767666155',
+            role: 'user',
+            contentLength: 5,
+            hasContent: true,
+            contentIsEmpty: false,
+            preview: 'Hello',
+            fullContent: 'Hello'
+          },
+          {
+            id: 'msg-1762089008854-0.8245165920468283',
+            role: 'assistant',
+            contentLength: 9,
+            hasContent: true,
+            contentIsEmpty: false,
+            preview: 'Hi there!',
+            fullContent: 'Hi there!'
+          }
+        ]
+      }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: [
+        {
+          id: 'msg-1762089008854-0.8245165920468283',
+          contentLength: 9,
+          content: 'Hi there!',
+          preview: 'Hi there!'
+        }
+      ]
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+    console.log
+      [MessageList] Messages updated: { count: 0, streamingStatus: false, messages: [] }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: []
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+    console.log
+      [MessageList] Rendering assistant message: {
+        id: 'msg-1762089008982-0.2931471897481335',
+        contentLength: 8,
+        preview: 'Response'
+      }
+
+      at log (src/components/ChatInterface/MessageList.tsx:67:21)
+          at Array.map (<anonymous>)
+
+    console.log
+      [MessageList] Messages updated: {
+        count: 2,
+        streamingStatus: false,
+        messages: [
+          {
+            id: 'msg-1762089008982-0.2672201376318575',
+            role: 'user',
+            contentLength: 8,
+            hasContent: true,
+            contentIsEmpty: false,
+            preview: 'Question',
+            fullContent: 'Question'
+          },
+          {
+            id: 'msg-1762089008982-0.2931471897481335',
+            role: 'assistant',
+            contentLength: 8,
+            hasContent: true,
+            contentIsEmpty: false,
+            preview: 'Response',
+            fullContent: 'Response'
+          }
+        ]
+      }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: [
+        {
+          id: 'msg-1762089008982-0.2931471897481335',
+          contentLength: 8,
+          content: 'Response',
+          preview: 'Response'
+        }
+      ]
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+    console.log
+      [MessageList] Messages updated: { count: 0, streamingStatus: false, messages: [] }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: []
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+    console.log
+      [MessageList] Rendering assistant message: {
+        id: 'msg-1762089009134-0.38363558816158805',
+        contentLength: 8,
+        preview: 'Response'
+      }
+
+      at log (src/components/ChatInterface/MessageList.tsx:67:21)
+          at Array.map (<anonymous>)
+
+    console.log
+      [MessageList] Messages updated: {
+        count: 2,
+        streamingStatus: false,
+        messages: [
+          {
+            id: 'msg-1762089009133-0.7241223705990087',
+            role: 'user',
+            contentLength: 8,
+            hasContent: true,
+            contentIsEmpty: false,
+            preview: 'Question',
+            fullContent: 'Question'
+          },
+          {
+            id: 'msg-1762089009134-0.38363558816158805',
+            role: 'assistant',
+            contentLength: 8,
+            hasContent: true,
+            contentIsEmpty: false,
+            preview: 'Response',
+            fullContent: 'Response'
+          }
+        ]
+      }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: [
+        {
+          id: 'msg-1762089009134-0.38363558816158805',
+          contentLength: 8,
+          content: 'Response',
+          preview: 'Response'
+        }
+      ]
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+    console.log
+      [MessageList] Messages updated: { count: 0, streamingStatus: false, messages: [] }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: []
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+    console.log
+      [MessageList] Rendering assistant message: {
+        id: 'msg-1762089009262-0.8735720375867331',
+        contentLength: 8,
+        preview: 'Response'
+      }
+
+      at log (src/components/ChatInterface/MessageList.tsx:67:21)
+          at Array.map (<anonymous>)
+
+    console.log
+      [MessageList] Messages updated: {
+        count: 2,
+        streamingStatus: false,
+        messages: [
+          {
+            id: 'msg-1762089009262-0.8731468938404414',
+            role: 'user',
+            contentLength: 8,
+            hasContent: true,
+            contentIsEmpty: false,
+            preview: 'Question',
+            fullContent: 'Question'
+          },
+          {
+            id: 'msg-1762089009262-0.8735720375867331',
+            role: 'assistant',
+            contentLength: 8,
+            hasContent: true,
+            contentIsEmpty: false,
+            preview: 'Response',
+            fullContent: 'Response'
+          }
+        ]
+      }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: [
+        {
+          id: 'msg-1762089009262-0.8735720375867331',
+          contentLength: 8,
+          content: 'Response',
+          preview: 'Response'
+        }
+      ]
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+    console.log
+      [MessageList] Messages updated: { count: 0, streamingStatus: false, messages: [] }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: []
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+    console.log
+      [MessageList] Rendering assistant message: {
+        id: 'msg-1762089009287-0.8346206749028651',
+        contentLength: 9,
+        preview: 'Hi there!'
+      }
+
+      at log (src/components/ChatInterface/MessageList.tsx:67:21)
+          at Array.map (<anonymous>)
+
+    console.log
+      [MessageList] Messages updated: {
+        count: 2,
+        streamingStatus: false,
+        messages: [
+          {
+            id: 'msg-1762089009287-0.6314868487206386',
+            role: 'user',
+            contentLength: 5,
+            hasContent: true,
+            contentIsEmpty: false,
+            preview: 'Hello',
+            fullContent: 'Hello'
+          },
+          {
+            id: 'msg-1762089009287-0.8346206749028651',
+            role: 'assistant',
+            contentLength: 9,
+            hasContent: true,
+            contentIsEmpty: false,
+            preview: 'Hi there!',
+            fullContent: 'Hi there!'
+          }
+        ]
+      }
+
+      at log (src/components/ChatInterface/MessageList.tsx:18:13)
+
+    console.log
+      [MessageList] Assistant messages: [
+        {
+          id: 'msg-1762089009287-0.8346206749028651',
+          contentLength: 9,
+          content: 'Hi there!',
+          preview: 'Hi there!'
+        }
+      ]
+
+      at log (src/components/ChatInterface/MessageList.tsx:34:13)
+
+PASS tests/components/__tests__/SatisfactionFeedback.test.tsx
+  ● Console
+
+    console.error
+      Failed to load sessions: TypeError: Cannot read properties of undefined (reading 'sessions')
+          at sessions (/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/src/context/SessionContext.tsx:55:20)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+      57 |       }
+      58 |     } catch (error) {
+    > 59 |       console.error('Failed to load sessions:', error);
+         |               ^
+      60 |     } finally {
+      61 |       setLoading(false);
+      62 |     }
+
+      at error (src/context/SessionContext.tsx:59:15)
+
+    console.error
+      Failed to load sessions: TypeError: Cannot read properties of undefined (reading 'sessions')
+          at sessions (/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/src/context/SessionContext.tsx:55:20)
+
+      57 |       }
+      58 |     } catch (error) {
+    > 59 |       console.error('Failed to load sessions:', error);
+         |               ^
+      60 |     } finally {
+      61 |       setLoading(false);
+      62 |     }
+
+      at error (src/context/SessionContext.tsx:59:15)
+
+    console.error
+      Failed to load sessions: TypeError: Cannot read properties of undefined (reading 'sessions')
+          at sessions (/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/src/context/SessionContext.tsx:55:20)
+
+      57 |       }
+      58 |     } catch (error) {
+    > 59 |       console.error('Failed to load sessions:', error);
+         |               ^
+      60 |     } finally {
+      61 |       setLoading(false);
+      62 |     }
+
+      at error (src/context/SessionContext.tsx:59:15)
+
+    console.error
+      Failed to load sessions: TypeError: Cannot read properties of undefined (reading 'sessions')
+          at sessions (/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/src/context/SessionContext.tsx:55:20)
+
+      57 |       }
+      58 |     } catch (error) {
+    > 59 |       console.error('Failed to load sessions:', error);
+         |               ^
+      60 |     } finally {
+      61 |       setLoading(false);
+      62 |     }
+
+      at error (src/context/SessionContext.tsx:59:15)
+
+    console.error
+      Failed to load sessions: TypeError: Cannot read properties of undefined (reading 'sessions')
+          at sessions (/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/src/context/SessionContext.tsx:55:20)
+
+      57 |       }
+      58 |     } catch (error) {
+    > 59 |       console.error('Failed to load sessions:', error);
+         |               ^
+      60 |     } finally {
+      61 |       setLoading(false);
+      62 |     }
+
+      at error (src/context/SessionContext.tsx:59:15)
+
+PASS tests/components/__tests__/InputBox.test.tsx
+PASS tests/context/__tests__/ChatContext.test.tsx
+PASS tests/hooks/__tests__/useUpload.test.tsx
+PASS tests/context/__tests__/SessionContext.test.tsx
+PASS tests/hooks/__tests__/useChat.test.tsx
+  ● Console
+
+    console.error
+      Failed to load sessions: TypeError: Cannot read properties of undefined (reading 'sessions')
+          at sessions (/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/src/context/SessionContext.tsx:55:20)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+      57 |       }
+      58 |     } catch (error) {
+    > 59 |       console.error('Failed to load sessions:', error);
+         |               ^
+      60 |     } finally {
+      61 |       setLoading(false);
+      62 |     }
+
+      at error (src/context/SessionContext.tsx:59:15)
+
+    console.error
+      Failed to load sessions: TypeError: Cannot read properties of undefined (reading 'sessions')
+          at sessions (/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/src/context/SessionContext.tsx:55:20)
+
+      57 |       }
+      58 |     } catch (error) {
+    > 59 |       console.error('Failed to load sessions:', error);
+         |               ^
+      60 |     } finally {
+      61 |       setLoading(false);
+      62 |     }
+
+      at error (src/context/SessionContext.tsx:59:15)
+
+    console.error
+      Failed to load sessions: TypeError: Cannot read properties of undefined (reading 'sessions')
+          at sessions (/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/src/context/SessionContext.tsx:55:20)
+
+      57 |       }
+      58 |     } catch (error) {
+    > 59 |       console.error('Failed to load sessions:', error);
+         |               ^
+      60 |     } finally {
+      61 |       setLoading(false);
+      62 |     }
+
+      at error (src/context/SessionContext.tsx:59:15)
+
+    console.error
+      Failed to load sessions: TypeError: Cannot read properties of undefined (reading 'sessions')
+          at sessions (/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/src/context/SessionContext.tsx:55:20)
+
+      57 |       }
+      58 |     } catch (error) {
+    > 59 |       console.error('Failed to load sessions:', error);
+         |               ^
+      60 |     } finally {
+      61 |       setLoading(false);
+      62 |     }
+
+      at error (src/context/SessionContext.tsx:59:15)
+
+    console.error
+      Failed to load sessions: TypeError: Cannot read properties of undefined (reading 'sessions')
+          at sessions (/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/src/context/SessionContext.tsx:55:20)
+
+      57 |       }
+      58 |     } catch (error) {
+    > 59 |       console.error('Failed to load sessions:', error);
+         |               ^
+      60 |     } finally {
+      61 |       setLoading(false);
+      62 |     }
+
+      at error (src/context/SessionContext.tsx:59:15)
+
+    console.error
+      Failed to load sessions: TypeError: Cannot read properties of undefined (reading 'sessions')
+          at sessions (/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/src/context/SessionContext.tsx:55:20)
+          at runNextTicks (node:internal/process/task_queues:65:5)
+          at listOnTimeout (node:internal/timers:549:9)
+          at processTimers (node:internal/timers:523:7)
+
+      57 |       }
+      58 |     } catch (error) {
+    > 59 |       console.error('Failed to load sessions:', error);
+         |               ^
+      60 |     } finally {
+      61 |       setLoading(false);
+      62 |     }
+
+      at error (src/context/SessionContext.tsx:59:15)
+
+PASS tests/hooks/__tests__/useSession.test.tsx
+PASS tests/components/__tests__/StreamingResponse.test.tsx
+PASS tests/utils/__tests__/stream-parser.test.ts
+PASS tests/utils/__tests__/file-handlers.test.ts
+PASS tests/services/__tests__/api-client.test.ts
+PASS tests/utils/__tests__/cn.test.ts
+
+Test Suites: 5 failed, 13 passed, 18 total
+Tests:       10 failed, 70 passed, 80 total
+Snapshots:   0 total
+Time:        9.778 s
+Ran all test suites matching test.

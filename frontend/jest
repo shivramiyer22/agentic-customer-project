@@ -1,0 +1,22 @@
+
+> frontend@0.1.0 test
+> jest --passWithNoTests --passWithNoTests --listTests
+
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/components/__tests__/FileUploader.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/components/__tests__/Header.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/components/__tests__/UploadProgress.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/components/__tests__/KnowledgeBaseSelector.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/components/__tests__/FilePreview.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/components/__tests__/SatisfactionFeedback.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/components/__tests__/InputBox.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/components/__tests__/MessageList.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/context/__tests__/ChatContext.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/context/__tests__/SessionContext.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/utils/__tests__/file-handlers.test.ts
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/hooks/__tests__/useChat.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/hooks/__tests__/useUpload.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/hooks/__tests__/useSession.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/components/__tests__/StreamingResponse.test.tsx
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/utils/__tests__/stream-parser.test.ts
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/services/__tests__/api-client.test.ts
+/Users/manasaiyer/Desktop/SKI - ASU/Vibe-Coding/agentic-customer-project/frontend/tests/utils/__tests__/cn.test.ts

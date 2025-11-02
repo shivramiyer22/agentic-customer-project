@@ -3,4 +3,10 @@ alwaysApply: true
 ---
 Always create and maintain a README.md file for the entire project in the project root folder and ensure it has clear instructions on how to setup the environment, install dependencies and run the application locally.
 
-When executing steps within a tasks list or a plan always consider all cursor rules, agent context data. Then for each step execute it, summarize what was done in the step, display what you will do in next step and ask for explicit permission before executing next step.
+When executing a steps within a tasks list file, do the following:
+1. always consider all applicable cursor rules, agent context data. 
+2. Then for each step execute, build or implement the step.
+3. Then generate comprehensive test cases and capture these in appropriate testing readme file/s for the applicable application module if one exists or create a new README_TESTING.md file if it does not already exist. 
+4. Then execute the full set of comprehensive testing, capture failures if any and iterate on them to fix them and retest until the testing of the step results in a 100% pass rate. Capture the testing results for each task in any existing or new TEST_RESULTS.md file in its own section. Do not create task specific test results documents separately.
+5. Finally summarize what was done in the step and update or create any existing README.md file. 
+6. Now display what you will do in next step and ask for explicit permission before executing next step.
