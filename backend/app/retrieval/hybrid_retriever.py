@@ -25,7 +25,7 @@ from app.utils.logger import app_logger
 @tool
 def search_billing_kb(
     query: str,
-    k: int = 3
+    k: int = 5
 ) -> str:
     """
     Search billing knowledge base using RAG strategy (dynamic vector retrieval).
@@ -45,7 +45,7 @@ def search_billing_kb(
     
     Args:
         query: User query about billing, pricing, contracts, or invoices
-        k: Number of documents to retrieve (default: 3 for billing documents)
+        k: Number of documents to retrieve (default: 5 for billing documents to ensure comprehensive results)
         
     Returns:
         Formatted context string with billing information and source citations

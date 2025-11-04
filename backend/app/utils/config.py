@@ -1,13 +1,32 @@
 """
 Configuration utilities and environment variable management
+
+Loads environment variables from the root .env file first,
+then falls back to backend/.env if root .env doesn't exist.
 """
 
 import os
+from pathlib import Path
 from typing import Optional
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
+# Get project root directory (two levels up from this file)
+# backend/app/utils/config.py -> backend -> root
+BACKEND_DIR = Path(__file__).parent.parent.parent
+ROOT_DIR = BACKEND_DIR.parent
+
+# Load environment variables from root .env file first (priority)
+# Then load from backend/.env as fallback
+root_env = ROOT_DIR / ".env"
+backend_env = BACKEND_DIR / ".env"
+
+if root_env.exists():
+    load_dotenv(root_env)
+    # Also load backend/.env for backend-specific configs (non-sensitive)
+    if backend_env.exists():
+        load_dotenv(backend_env, override=False)  # Don't override root .env values
+elif backend_env.exists():
+    load_dotenv(backend_env)
 
 
 class Config:
@@ -21,6 +40,7 @@ class Config:
     # AWS Bedrock Configuration
     AWS_ACCESS_KEY_ID: Optional[str] = os.getenv("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY: Optional[str] = os.getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_BEARER_TOKEN_BEDROCK: Optional[str] = os.getenv("AWS_BEARER_TOKEN_BEDROCK")
     AWS_REGION: str = os.getenv("AWS_REGION", "us-east-1")
     AWS_BEDROCK_MODEL: str = os.getenv("AWS_BEDROCK_MODEL", "bedrock:claude-3-haiku")
     

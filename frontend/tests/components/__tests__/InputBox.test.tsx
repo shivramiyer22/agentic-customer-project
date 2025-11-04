@@ -31,6 +31,7 @@ describe('InputBox component', () => {
         messages: [],
         sessionId: null,
         resetChat: jest.fn(),
+        tokenUsage: { inputTokens: 0, outputTokens: 0 },
       })),
     }))
 

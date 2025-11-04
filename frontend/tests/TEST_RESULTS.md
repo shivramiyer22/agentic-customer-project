@@ -1,12 +1,12 @@
 # Frontend Test Results
 
-**Date:** November 2025  
+**Date:** November 3, 2025  
 **Status:** ✅ **100% PASS RATE - ALL TESTS PASSING**
 
 ## Summary
 
-- **Total Tests:** 80 (73 existing + 7 Contributing Models Feature)
-- **Passed:** 80 ✅
+- **Total Tests:** 81 (73 existing + 7 Contributing Models Feature + 1 UI Enhancement)
+- **Passed:** 81 ✅
 - **Failed:** 0
 - **Pass Rate:** 100%
 
@@ -28,14 +28,14 @@
 ✅ useSession hook tests
 
 ### Components (40/40 - 100%)
-✅ **MessageList Component (7/7):**
+✅ **MessageList Component (8/8):**
   - should render empty state when no messages
   - should render messages correctly
   - should display agent name for assistant messages
-  - should display contributing agents when present (NEW)
-  - should display contributing models when present (NEW)
-  - should display both contributing agents and models when both are present (NEW)
-  - should not display contributing info section when neither agents nor models are present (NEW)
+  - should display contributing agents when present (Updated: "Contributing Agent Calls")
+  - should display contributing models when present (Updated: "Contributing Model Calls")
+  - should display both contributing agents and models when both are present
+  - should not display contributing info section when neither agents nor models are present
 
 ✅ Header component tests (3/3)
 ✅ FileUploader component tests (3/3)
@@ -101,5 +101,15 @@
 
 ---
 
-**Last Updated:** November 2025  
-**Test Suite Status:** ✅ All tests passing (80/80)
+## Recent Updates (November 3, 2025)
+
+1. **Label Updates:**
+   - Updated tests to match new labels: "Contributing Agent Calls" and "Contributing Model Calls"
+   - All MessageList component tests updated to use new label format
+
+2. **Jest Configuration:**
+   - Jest config files properly located in `tests/jest/` folder
+   - Config files also copied to root for Jest discovery
+
+**Last Updated:** November 3, 2025  
+**Test Suite Status:** ✅ All tests passing (81/81)

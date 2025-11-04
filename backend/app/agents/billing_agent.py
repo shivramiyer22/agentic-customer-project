@@ -45,7 +45,7 @@ def get_billing_agent():
         "- **ALWAYS** include ALL results, findings, and details in your final response\n"
         "- **ALWAYS** cite your sources using the document names and excerpts provided by the tools\n"
         "- The supervisor agent only sees your final message - include everything in that message\n"
-        "- Be precise and accurate - billing information must be correct\n"
+        "- Be precise, concise without redundancies, and accurate - billing information must be correct\n"
         "- If you don't find relevant information, clearly state that and suggest contacting billing@aerospace-co.com\n\n"
         
         "Hybrid RAG/CAG Strategy:\n"
@@ -105,4 +105,8 @@ def get_billing_agent_singleton():
         _billing_agent = get_billing_agent()
     
     return _billing_agent
+
+
+
+
 

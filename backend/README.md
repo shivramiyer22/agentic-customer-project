@@ -63,7 +63,7 @@ The application uses:
   - ✅ Conversation state management with InMemorySaver
   - ✅ SSE streaming support from supervisor agent
   - ✅ Session ID generation and thread_id management
-- ✅ **Policy & Compliance Agent (Pure CAG) - Task 6.0** ✅
+- ✅ **Policy Tool Agent (Pure CAG) - Task 6.0** ✅
   - ✅ Policy agent using `create_agent()` from LangChain v1.0
   - ✅ Pure CAG retrieval strategy (search_policy_kb tool)
   - ✅ OpenAI model (gpt-4o-mini) with descriptive name
@@ -71,7 +71,7 @@ The application uses:
   - ✅ Source citation formatting
   - ✅ Policy tool integration with supervisor agent
   - ✅ Conversation state management with InMemorySaver
-- ✅ **Technical Support Agent (Pure RAG) - Task 7.0** ✅
+- ✅ **Technical Tool Agent (Pure RAG) - Task 7.0** ✅
   - ✅ Technical agent using `create_agent()` from LangChain v1.0
   - ✅ Pure RAG retrieval strategy (search_technical_kb tool)
   - ✅ OpenAI model (gpt-4o-mini) with descriptive name
@@ -79,7 +79,7 @@ The application uses:
   - ✅ Source citation formatting
   - ✅ Technical tool integration with supervisor agent
   - ✅ Conversation state management with InMemorySaver
-- ✅ **Billing Support Agent (Hybrid RAG/CAG) - Task 8.0** ✅
+- ✅ **Billing Tool Agent (Hybrid RAG/CAG) - Task 8.0** ✅
   - ✅ Billing agent using `create_agent()` from LangChain v1.0
   - ✅ Hybrid RAG/CAG retrieval strategy (search_billing_kb and get_cached_policy_info tools)
   - ✅ OpenAI model (gpt-4o-mini) with descriptive name
@@ -89,13 +89,25 @@ The application uses:
   - ✅ Billing tool integration with supervisor agent
   - ✅ Conversation state management with InMemorySaver
 - ✅ Chat endpoint with SSE streaming support
+- ✅ Contributing agents and models tracking
+- ✅ Token usage tracking and cost calculation
 - ✅ Health and collection monitoring endpoints
-- ✅ Comprehensive test suite (189 tests total: 32 Task 5.0 + 26 Task 6.0 + 26 Task 7.0 + 36 Task 8.0)
+- ✅ Comprehensive test suite (199 tests total: 32 Task 5.0 + 26 Task 6.0 + 26 Task 7.0 + 28 Task 8.0 + 8 Task 8.13 + 3 Contributing Models + 5 Connection Tests)
 - ✅ Complete multi-agent system routing verified
+- ✅ AWS Bedrock connection (mandatory) with OpenAI fallback
+
+### ✅ Additional Features
+
+- ✅ Restart script (`restart_backend.sh`) for easy application restart
+- ✅ AWS Bedrock Claude 3 Haiku integration for supervisor agent
+- ✅ Contributing agents and models tracking in chat responses (with order preservation)
+- ✅ Multi-agent routing with emergency detection
+- ✅ Tool call ID tracking for reliable agent contribution tracking
+- ✅ Billing KB comprehensive retrieval (k=5 for comparative queries)
 
 ### 🚧 Future Enhancements
 
-- 🚧 LangSmith tracing integration
+- 🚧 LangSmith tracing integration (optional)
 - 🚧 Additional agent specializations if needed
 
 ---
@@ -170,6 +182,15 @@ See [Environment Variables](#environment-variables) section for details.
 python -c "import fastapi, chromadb, langchain; print('✓ Dependencies installed')"
 ```
 
+### 6. (Optional) Install AWS Support for Bedrock
+
+If you want to use AWS Bedrock (recommended for supervisor agent):
+
+```bash
+# langchain-aws should already be in requirements.txt
+pip install langchain-aws>=0.1.0
+```
+
 ---
 
 ## Environment Variables
@@ -190,7 +211,7 @@ OPENAI_API_KEY=your-openai-api-key-here
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 OPENAI_EMBEDDING_DIMENSIONS=1536
 
-# AWS Bedrock Configuration (Optional - for future LLM routing)
+# AWS Bedrock Configuration (Recommended - for supervisor agent)
 AWS_ACCESS_KEY_ID=your-aws-access-key-id
 AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
 AWS_REGION=us-east-1
@@ -209,6 +230,8 @@ LANGSMITH_TRACING=false
 LANGSMITH_API_KEY=your-langsmith-api-key
 LANGSMITH_PROJECT=aerospace-customer-service
 ```
+
+**Note:** If AWS Bedrock credentials are not provided, the supervisor agent will fall back to OpenAI `gpt-4o-mini`. However, AWS Bedrock Claude 3 Haiku is **mandatory** for production use as per project requirements.
 
 ### Environment Variable Descriptions
 
@@ -256,6 +279,25 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```bash
 python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
+
+### Using Restart Script
+
+A convenient restart script is available:
+
+```bash
+# Make script executable (first time only)
+chmod +x restart_backend.sh
+
+# Restart the backend application
+./restart_backend.sh
+```
+
+This script will:
+- Kill any existing processes on port 8000
+- Activate the virtual environment
+- Start the FastAPI server with auto-reload
+
+**Note:** The script runs the server in the background. Check the output for the process ID if you need to stop it manually.
 
 ### Access the API
 
@@ -475,9 +517,9 @@ backend/
 │   ├── agents/                 # Agent implementations (Tasks 5-8)
 │   │   ├── __init__.py
 │   │   ├── orchestrator.py     # Supervisor agent (planned)
-│   │   ├── billing_agent.py    # Billing Support Agent (planned)
-│   │   ├── technical_agent.py  # Technical Support Agent (planned)
-│   │   └── policy_agent.py     # Policy & Compliance Agent (planned)
+│   │   ├── billing_agent.py    # Billing Tool Agent (planned)
+│   │   ├── technical_agent.py  # Technical Tool Agent (planned)
+│   │   └── policy_agent.py     # Policy Tool Agent (planned)
 │   │
 │   └── utils/                   # Utilities
 │       ├── __init__.py
@@ -542,15 +584,34 @@ pytest --cov=app --cov-report=html
 
 ### Test Coverage
 
-The test suite includes:
+The test suite includes **194 tests** with **100% pass rate**:
 
-- ✅ Configuration tests (`test_config.py`)
-- ✅ ChromaDB client tests (`test_chroma_client.py`)
-- ✅ Document parser tests (`test_parsers.py`)
-- ✅ Chunker tests (`test_chunkers.py`)
-- ✅ Ingestion pipeline tests (`test_ingestion.py`, `test_ingestion_comprehensive.py`)
-- ✅ Router endpoint tests (`test_routers_*.py`)
-- ✅ Integration tests (`test_integration.py`)
+- ✅ Configuration tests (6 tests) - `test_config.py`
+- ✅ ChromaDB client tests (4 tests) - `test_chroma_client.py`
+- ✅ Document parser tests (10 tests) - `test_parsers.py`
+- ✅ Chunker tests (6 tests) - `test_chunkers.py`
+- ✅ Ingestion pipeline tests (21 tests) - `test_ingestion.py`, `test_ingestion_comprehensive.py`
+- ✅ Router endpoint tests (31 tests) - `test_routers_*.py`
+  - Health Router: 3 tests
+  - Collections Router: 4 tests
+  - Upload Router: 10 tests
+  - Chat Router: 11 tests (includes 3 Contributing Models tests)
+  - General Router: 2 tests
+- ✅ Agent tests (78 tests):
+  - Supervisor Agent: 18 tests (includes 2 AWS Bedrock connection tests)
+  - Policy Agent: 16 tests
+  - Technical Agent: 16 tests
+  - Billing Agent: 16 tests
+  - Multi-Agent Routing: 8 tests
+- ✅ Retrieval tests (31 tests):
+  - CAG Retriever: 10 tests
+  - RAG Retriever: 10 tests
+  - Hybrid Retriever: 11 tests
+- ✅ State management tests (3 tests) - `test_state.py`
+- ✅ Schema tests (9 tests) - `test_schemas_chat.py`
+- ✅ Integration tests (4 tests) - `test_integration.py`
+
+For detailed test documentation, see `README_TESTING.md` and `TEST_RESULTS.md`.
 
 ### Test Requirements
 
@@ -654,6 +715,52 @@ To add a new collection:
 - Check OpenAI API key is valid
 - Review upload status in database (if implemented)
 
+#### 7. AWS Bedrock Connection Failed
+
+**Error:** `Failed to connect to AWS Bedrock` or supervisor agent falls back to OpenAI
+
+**Solutions:**
+- Verify `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are set in `.env`
+- Check `AWS_REGION` is correct (default: `us-east-1`)
+- Ensure `langchain-aws` package is installed: `pip install langchain-aws>=0.1.0`
+- Verify AWS credentials have Bedrock access permissions
+- Check AWS service status and region availability
+
+#### 8. Supervisor Agent Not Routing to Multiple Agents
+
+**Error:** Supervisor only routes to one agent for multi-part queries
+
+**Solutions:**
+- Check supervisor agent system prompt in `app/agents/orchestrator.py`
+- Verify AWS Bedrock is connected (better routing performance)
+- Ensure tool descriptions are clear and specific
+- Check server logs for tool call details
+
+#### 9. Contributing Agents/Models Not Displaying or Accumulating
+
+**Error:** Contributing agents/models not shown in chat response metadata or showing accumulated values from previous requests
+
+**Solutions:**
+- Verify SSE streaming is working correctly
+- Check `ChatStreamChunk` metadata includes `contributing_agents` and `contributing_models`
+- Ensure frontend is extracting metadata from SSE messages
+- Review `app/routers/chat.py` for tool_call_id tracking logic
+- Check that lists (not sets) are used for order preservation
+- Verify placeholder messages initialize with empty arrays
+- Clear browser localStorage if old values persist: `localStorage.clear()`
+
+#### 10. Billing Agent Returns Wrong Invoice Data
+
+**Error:** Agent returns incorrect invoice for comparative queries ("highest", "largest", etc.)
+
+**Solutions:**
+- Verify billing KB has sufficient documents uploaded
+- Check k parameter in `search_billing_kb` (default: k=5)
+- Ensure all invoice documents are properly ingested
+- Review retrieval scores in logs (lower scores = better matches)
+- Consider increasing k if you have many invoice documents
+- Verify embeddings are generated correctly
+
 ### Debug Mode
 
 Enable verbose logging:
@@ -676,6 +783,38 @@ Logs are printed to stdout/stderr. In production, redirect to log files:
 ```bash
 uvicorn app.main:app --host 0.0.0.0 --port 8000 >> logs/app.log 2>&1
 ```
+
+### Checking Application Status
+
+#### Verify Backend is Running
+
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# Check collections
+curl http://localhost:8000/collections
+
+# View API docs
+open http://localhost:8000/docs
+```
+
+#### Check Process Status
+
+```bash
+# Find process on port 8000
+lsof -ti:8000
+
+# View process details
+ps aux | grep uvicorn
+```
+
+#### Verify AWS Bedrock Connection
+
+Check the server logs on startup. You should see:
+- `Attempting to connect to AWS Bedrock: bedrock:claude-3-haiku` (if credentials are set)
+- `Using AWS Bedrock for supervisor agent` (if connection successful)
+- `Falling back to OpenAI` (if Bedrock connection fails)
 
 ---
 
@@ -767,16 +906,57 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ---
 
-## Next Steps (Tasks 5-8)
+## Application Architecture
 
-The following features are planned for implementation:
+### Multi-Agent System
 
-1. **Task 5.0:** Supervisor Agent Implementation
-2. **Task 6.0:** Policy & Compliance Agent (Pure CAG)
-3. **Task 7.0:** Technical Support Agent (Pure RAG)
-4. **Task 8.0:** Billing Support Agent (Hybrid RAG/CAG)
+The application uses a **supervisor-worker pattern** for multi-agent orchestration:
 
-These will replace the placeholder chat endpoint with full multi-agent orchestration.
+1. **Supervisor Agent** (Task 5.0)
+   - Uses AWS Bedrock Claude 3 Haiku (mandatory) with OpenAI fallback
+   - Routes queries to appropriate worker agents
+   - Detects emergencies and escalates
+   - Tracks contributing agents and models
+
+2. **Policy Tool Agent** (Task 6.0)
+   - Pure CAG (Cached Augmented Generation) retrieval strategy
+   - Handles policy and compliance queries
+   - Uses OpenAI `gpt-4o-mini`
+
+3. **Technical Tool Agent** (Task 7.0)
+   - Pure RAG (Retrieval Augmented Generation) retrieval strategy
+   - Handles technical support queries
+   - Uses OpenAI `gpt-4o-mini`
+
+4. **Billing Tool Agent** (Task 8.0)
+   - Hybrid RAG/CAG retrieval strategy
+   - Handles billing and invoice queries
+   - Uses OpenAI `gpt-4o-mini`
+
+### Knowledge Base Collections
+
+Three ChromaDB collections store different document types:
+
+- `billing_knowledge_base` - Billing and invoice documents
+- `technical_knowledge_base` - Technical support documents
+- `policy_knowledge_base` - Policy and compliance documents
+
+### Retrieval Strategies
+
+- **CAG (Cached Augmented Generation):** Static policy documents cached in memory
+- **RAG (Retrieval Augmented Generation):** Dynamic vector similarity search
+- **Hybrid RAG/CAG:** Combines both strategies for billing queries
+
+## Completion Status
+
+All planned tasks are **✅ COMPLETE**:
+
+- ✅ **Task 5.0:** Supervisor Agent Implementation
+- ✅ **Task 6.0:** Policy Tool Agent (Pure CAG)
+- ✅ **Task 7.0:** Technical Tool Agent (Pure RAG)
+- ✅ **Task 8.0:** Billing Tool Agent (Hybrid RAG/CAG)
+
+The application now provides full multi-agent orchestration with comprehensive testing and documentation.
 
 ---
 
@@ -797,7 +977,22 @@ Proprietary - The Aerospace Company
 
 ---
 
-**Last Updated:** November 2025  
+**Last Updated:** November 2, 2025  
 **Version:** 1.0.0
 
+---
+
+## Recent Updates (November 2, 2025)
+
+### Bug Fixes
+- ✅ Fixed Contributing Agents reinitialization issue (tool_call ID tracking)
+- ✅ Fixed Billing KB retrieval for comparative queries (increased k to 5)
+- ✅ Order preservation for contributing agents/models (lists instead of sets)
+
+### Enhancements
+- ✅ Reliable deduplication using tool_call.id instead of id(msg)
+- ✅ Comprehensive billing document retrieval for better accuracy
+- ✅ Contributing agents/models display in invocation order
+
+---
 

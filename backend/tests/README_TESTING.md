@@ -33,7 +33,9 @@ backend/tests/
 ├── test_chunkers.py         # Tests for document chunkers
 ├── test_chroma_client.py    # Tests for ChromaDB client
 ├── test_ingestion_comprehensive.py  # Comprehensive ingestion tests
-└── test_integration.py      # Integration tests
+├── test_integration.py      # Integration tests
+├── test_connections.py      # Connection tests (OpenAI, AWS Bedrock)
+└── test_chromadb_setup.py   # ChromaDB setup verification script
 ```
 
 ## Running Tests
@@ -48,7 +50,13 @@ pip install -r requirements.txt
 ### Run All Tests
 
 ```bash
+# From backend directory
+cd backend
 pytest tests/
+
+# Or from project root
+cd /path/to/project
+pytest backend/tests/
 ```
 
 ### Run Specific Test Files

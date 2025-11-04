@@ -176,3 +176,7 @@ def test_search_technical_kb_custom_k():
         call_kwargs = mock_collection.similarity_search.call_args[1]
         assert call_kwargs.get('k') == 5
 
+
+
+
+

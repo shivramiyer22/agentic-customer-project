@@ -159,3 +159,7 @@ def test_technical_agent_with_rag_retrieval():
             tool_strs = [str(t).lower() for t in tools]
             assert any('technical' in s or 'search' in s for s in tool_strs)
 
+
+
+
+

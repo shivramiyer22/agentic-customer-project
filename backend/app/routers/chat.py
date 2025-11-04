@@ -6,6 +6,9 @@ Documentation Reference: https://docs.langchain.com/oss/python/langchain/agents
 Last Verified: November 2025
 """
 
+from collections import defaultdict
+from typing import Dict, Any, Set, Tuple
+
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 import asyncio
@@ -15,6 +18,90 @@ from app.agents.orchestrator import get_supervisor_agent_singleton
 from app.utils.logger import app_logger
 
 router = APIRouter(prefix="/chat", tags=["chat"])
+
+
+# Token usage tracking per session (in-memory)
+SESSION_TOKEN_STATS: Dict[str, Dict[str, int]] = defaultdict(
+    lambda: {"input_tokens": 0, "output_tokens": 0}
+)
+
+
+def _parse_token_usage(raw_usage: Any) -> Tuple[int, int]:
+    """Normalize raw usage payloads into input/output token counts."""
+    input_tokens = None
+    output_tokens = None
+
+    if isinstance(raw_usage, dict):
+        # Nested structures {"input": {"tokens": int}, "output": {...}}
+        if isinstance(raw_usage.get("input"), dict):
+            input_tokens = raw_usage["input"].get("tokens") or raw_usage["input"].get("token_count")
+        if isinstance(raw_usage.get("output"), dict):
+            output_tokens = raw_usage["output"].get("tokens") or raw_usage["output"].get("token_count")
+
+        # Common flat keys across providers
+        for key in ("input_tokens", "prompt_tokens", "promptTokens", "inputTokens", "inputTokenCount"):
+            if raw_usage.get(key) is not None and input_tokens is None:
+                input_tokens = raw_usage[key]
+        for key in ("output_tokens", "completion_tokens", "completionTokens", "outputTokens", "outputTokenCount"):
+            if raw_usage.get(key) is not None and output_tokens is None:
+                output_tokens = raw_usage[key]
+
+        # Some providers expose total tokens only; treat as output if nothing else present
+        if raw_usage.get("total_tokens") is not None:
+            total = raw_usage.get("total_tokens")
+            if output_tokens is None:
+                output_tokens = total
+            if input_tokens is None:
+                input_tokens = 0
+
+    elif isinstance(raw_usage, (int, float)):
+        # Fallback if a single numeric value is provided
+        output_tokens = raw_usage
+
+    def _safe_int(value: Any) -> int:
+        try:
+            if value is None:
+                return 0
+            return int(value)
+        except (TypeError, ValueError):
+            return 0
+
+    return _safe_int(input_tokens), _safe_int(output_tokens)
+
+
+def _update_session_token_usage(session_id: str, message: Any, processed_ids: Set[str]) -> None:
+    """Update session token counters from message response metadata."""
+
+    metadata = getattr(message, "response_metadata", None)
+    if not metadata or not isinstance(metadata, dict):
+        return
+
+    msg_identifier = getattr(message, "id", None) or getattr(message, "uuid", None)
+    if msg_identifier is None:
+        msg_identifier = f"{type(message).__name__}_{id(message)}"
+
+    if msg_identifier in processed_ids:
+        return
+
+    raw_usage = (
+        metadata.get("usage")
+        or metadata.get("token_usage")
+        or metadata.get("tokenUsage")
+        or metadata.get("metrics", {}).get("usage")
+        or metadata.get("result_metadata", {}).get("usage")
+    )
+
+    if not raw_usage:
+        return
+
+    input_tokens, output_tokens = _parse_token_usage(raw_usage)
+    if input_tokens == 0 and output_tokens == 0:
+        return
+
+    session_stats = SESSION_TOKEN_STATS[session_id]
+    session_stats["input_tokens"] += input_tokens
+    session_stats["output_tokens"] += output_tokens
+    processed_ids.add(msg_identifier)
 
 
 async def generate_agent_stream(supervisor_agent, message: str, session_id: str):
@@ -44,22 +131,25 @@ async def generate_agent_stream(supervisor_agent, message: str, session_id: str)
         previous_content = ""
         chunk_count = 0
         accumulated_content = ""
-        contributing_agents = set()  # Track which worker agents contributed
-        contributing_models = set()  # Track which LLM models were used
+        contributing_agents = []  # Track which worker agents contributed (preserve order)
+        contributing_models = []  # Track which LLM models were used (preserve order)
+        processed_tool_call_ids = set()  # Track which tool_calls we've already processed
+        processed_token_message_ids: Set[str] = set()  # Track token usage updates
+        session_token_stats = SESSION_TOKEN_STATS[session_id]
         tool_name_to_agent = {
-            "billing_tool": "Billing Support Agent",
-            "technical_tool": "Technical Support Agent",
-            "policy_tool": "Policy & Compliance Agent",
+            "billing_tool": "Billing Tool Agent",
+            "technical_tool": "Technical Tool Agent",
+            "policy_tool": "Policy Tool Agent",
         }
         tool_name_to_model = {
             "billing_tool": "OpenAI gpt-4o-mini",
             "technical_tool": "OpenAI gpt-4o-mini",
             "policy_tool": "OpenAI gpt-4o-mini",
         }
-        # Supervisor model (AWS Bedrock Claude 3 Haiku)
+        # Supervisor model (AWS Bedrock Claude 3 Haiku) - add first as it's always invoked first
         from app.utils.config import config
         supervisor_model = config.AWS_BEDROCK_MODEL.replace("bedrock:", "AWS Bedrock ").replace("-", " ").title()
-        contributing_models.add(supervisor_model)
+        contributing_models.append(supervisor_model)
         
         async for chunk in supervisor_agent.astream(
             {"messages": input_messages},
@@ -83,7 +173,20 @@ async def generate_agent_stream(supervisor_agent, message: str, session_id: str)
                         messages = chunk.messages
                 
                 if messages:
-                    # Track all messages to identify tool calls
+                    # Update session token usage from message metadata
+                    for msg in messages:
+                        _update_session_token_usage(session_id, msg, processed_token_message_ids)
+
+                    if session_token_stats["input_tokens"] or session_token_stats["output_tokens"]:
+                        app_logger.debug(
+                            "Session %s token usage updated: input=%s, output=%s",
+                            session_id,
+                            session_token_stats["input_tokens"],
+                            session_token_stats["output_tokens"],
+                        )
+
+                    # Track tool calls to identify which agents contributed
+                    # Process only NEW tool_calls we haven't seen before to preserve order
                     for msg in messages:
                         msg_type = type(msg).__name__
                         
@@ -92,30 +195,39 @@ async def generate_agent_stream(supervisor_agent, message: str, session_id: str)
                             # Check if this AIMessage contains tool_calls
                             if hasattr(msg, "tool_calls") and msg.tool_calls:
                                 for tool_call in msg.tool_calls:
-                                    # Extract tool name from tool_call
+                                    # Extract tool_call_id for deduplication
+                                    tool_call_id = None
                                     tool_name = None
+                                    
                                     if isinstance(tool_call, dict):
+                                        tool_call_id = tool_call.get("id")
                                         tool_name = tool_call.get("name")
-                                    elif hasattr(tool_call, "name"):
+                                    elif hasattr(tool_call, "id") and hasattr(tool_call, "name"):
+                                        tool_call_id = tool_call.id
                                         tool_name = tool_call.name
+                                    
+                                    # Skip if we've already processed this tool_call
+                                    if tool_call_id and tool_call_id in processed_tool_call_ids:
+                                        continue
+                                    
+                                    if tool_call_id:
+                                        processed_tool_call_ids.add(tool_call_id)
                                     
                                     if tool_name:
                                         agent_name = tool_name_to_agent.get(tool_name)
+                                        # Append in order - deduplication handled by tool_call_id tracking
                                         if agent_name:
-                                            contributing_agents.add(agent_name)
-                                            app_logger.info(f"Detected contributing agent: {agent_name} (from tool: {tool_name})")
+                                            contributing_agents.append(agent_name)
+                                            app_logger.info(f"Detected contributing agent: {agent_name} (from tool: {tool_name}, id: {tool_call_id})")
                                         
-                                        # Track model used by this tool's agent
+                                        # Track model used by this tool's agent (preserve order)
                                         model_name = tool_name_to_model.get(tool_name)
                                         if model_name:
-                                            contributing_models.add(model_name)
+                                            contributing_models.append(model_name)
                                             app_logger.info(f"Detected contributing model: {model_name} (from tool: {tool_name})")
-                        
-                        # Also track ToolMessages (fallback method)
-                        elif msg_type == "ToolMessage":
-                            # ToolMessage has tool_call_id, but we need to match it to AIMessage tool_calls
-                            # For now, we'll rely on AIMessage tool_calls which is more reliable
-                            pass
+                                        
+                        # Note: ToolMessages appear after tools execute, but we track based on AIMessage tool_calls
+                        # which appear in the order tools are invoked, and use tool_call_id for deduplication
                     
                     # Get last message (most recent assistant message) for streaming
                     last_message = messages[-1]
@@ -143,13 +255,19 @@ async def generate_agent_stream(supervisor_agent, message: str, session_id: str)
                                         app_logger.info(f"Sending content chunk: {len(new_content)} chars (total: {len(content)}), contributing agents: {list(contributing_agents)}")
                                         
                                         # Send content delta as SSE chunk with contributing agents and models in metadata
+                                        # Lists preserve order, so agents/models are in invocation sequence
                                         chunk_data = ChatStreamChunk(
                                             content=new_content,
                                             agent="supervisor_agent",
                                             metadata={
-                                                "contributing_agents": list(contributing_agents) if contributing_agents else [],
-                                                "contributing_models": list(contributing_models) if contributing_models else []
-                                            }
+                                                "contributing_agents": contributing_agents,
+                                                "contributing_models": contributing_models,
+                                                "token_usage": {
+                                                    "input_tokens_total": session_token_stats["input_tokens"],
+                                                    "output_tokens_total": session_token_stats["output_tokens"],
+                                                    "total_tokens": session_token_stats["input_tokens"] + session_token_stats["output_tokens"],
+                                                },
+                                            },
                                         )
                                         yield f"data: {chunk_data.model_dump_json(exclude_none=True)}\n\n"
                                         previous_content = content  # Keep track for comparison
@@ -170,6 +288,9 @@ async def generate_agent_stream(supervisor_agent, message: str, session_id: str)
                 )
                 
                 if "messages" in result and result["messages"]:
+                    for msg in result["messages"]:
+                        _update_session_token_usage(session_id, msg, processed_token_message_ids)
+
                     final_message = result["messages"][-1]
                     if hasattr(final_message, "content") and final_message.content:
                         content = str(final_message.content)
@@ -177,21 +298,35 @@ async def generate_agent_stream(supervisor_agent, message: str, session_id: str)
                         
                         chunk_data = ChatStreamChunk(
                             content=content,
-                            agent="supervisor_agent"
+                            agent="supervisor_agent",
+                            metadata={
+                                "contributing_agents": contributing_agents,
+                                "contributing_models": contributing_models,
+                                "token_usage": {
+                                    "input_tokens_total": session_token_stats["input_tokens"],
+                                    "output_tokens_total": session_token_stats["output_tokens"],
+                                    "total_tokens": session_token_stats["input_tokens"] + session_token_stats["output_tokens"],
+                                },
+                            },
                         )
                         yield f"data: {chunk_data.model_dump_json(exclude_none=True)}\n\n"
             except Exception as fallback_error:
                 app_logger.error(f"Error getting fallback response: {fallback_error}")
         
-        # Send done signal with final contributing agents and models list
+        # Send done signal with final contributing agents and models list (preserve order)
         done_chunk = ChatStreamChunk(
             content="",
             agent="supervisor_agent",
             done=True,
             metadata={
-                "contributing_agents": list(contributing_agents) if contributing_agents else [],
-                "contributing_models": list(contributing_models) if contributing_models else []
-            }
+                "contributing_agents": contributing_agents,
+                "contributing_models": contributing_models,
+                "token_usage": {
+                    "input_tokens_total": session_token_stats["input_tokens"],
+                    "output_tokens_total": session_token_stats["output_tokens"],
+                    "total_tokens": session_token_stats["input_tokens"] + session_token_stats["output_tokens"],
+                },
+            },
         )
         yield f"data: {done_chunk.model_dump_json(exclude_none=True)}\n\n"
         yield "data: [DONE]\n\n"
@@ -234,6 +369,13 @@ def get_agent_response_non_streaming(supervisor_agent, message: str, session_id:
         )
         
         # Extract final message content
+        processed_token_message_ids: Set[str] = set()
+        if isinstance(result, dict) and "messages" in result:
+            for msg in result["messages"]:
+                _update_session_token_usage(session_id, msg, processed_token_message_ids)
+
+        session_token_stats = SESSION_TOKEN_STATS[session_id]
+
         if "messages" in result and result["messages"]:
             final_message = result["messages"][-1]
             response_content = final_message.content if hasattr(final_message, "content") else str(final_message)
@@ -245,7 +387,13 @@ def get_agent_response_non_streaming(supervisor_agent, message: str, session_id:
             message=response_content,
             agent="supervisor_agent",
             sources=[],
-            metadata={}
+            metadata={
+                "token_usage": {
+                    "input_tokens_total": session_token_stats["input_tokens"],
+                    "output_tokens_total": session_token_stats["output_tokens"],
+                    "total_tokens": session_token_stats["input_tokens"] + session_token_stats["output_tokens"],
+                }
+            }
         )
         
     except Exception as e:

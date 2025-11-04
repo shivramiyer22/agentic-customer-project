@@ -17,6 +17,11 @@ export interface Message {
   sources?: Array<{ name: string; excerpt: string }>;
 }
 
+export interface TokenUsage {
+  inputTokens: number;
+  outputTokens: number;
+}
+
 export interface ChatContextType {
   messages: Message[];
   streamingStatus: boolean;
@@ -27,6 +32,9 @@ export interface ChatContextType {
   updateContributingAgents: (contributingAgents: string[]) => void;
   updateContributingModels: (contributingModels: string[]) => void;
   setStreamingStatus: (status: boolean) => void;
+  tokenUsage: TokenUsage;
+  updateTokenUsage: (usage: TokenUsage) => void;
+  resetTokenUsage: () => void;
   clearMessages: () => void;
 }
 
@@ -34,6 +42,7 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'aerospace_chat_history';
 const SESSION_KEY = 'aerospace_session_id';
+const TOKEN_KEY = 'aerospace_token_usage';
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
   // Start with empty messages to avoid hydration mismatch
@@ -42,6 +51,10 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [streamingStatus, setStreamingStatus] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [tokenUsage, setTokenUsage] = useState<TokenUsage>({
+    inputTokens: 0,
+    outputTokens: 0,
+  });
   
   // Load from localStorage after hydration (client-side only)
   React.useEffect(() => {
@@ -66,6 +79,24 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       const storedSessionId = localStorage.getItem(SESSION_KEY);
       if (storedSessionId) {
         setSessionId(storedSessionId);
+      }
+
+      const storedTokens = localStorage.getItem(TOKEN_KEY);
+      if (storedTokens) {
+        try {
+          const parsedTokens = JSON.parse(storedTokens);
+          if (
+            typeof parsedTokens?.inputTokens === 'number' &&
+            typeof parsedTokens?.outputTokens === 'number'
+          ) {
+            setTokenUsage({
+              inputTokens: parsedTokens.inputTokens,
+              outputTokens: parsedTokens.outputTokens,
+            });
+          }
+        } catch (e) {
+          console.error('[ChatContext] Error parsing token usage from localStorage:', e);
+        }
       }
       
       setIsHydrated(true);
@@ -114,6 +145,27 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     }
   }, [sessionId, isHydrated]);
 
+  React.useEffect(() => {
+    if (!isHydrated || typeof window === 'undefined') return;
+
+    if (tokenUsage.inputTokens > 0 || tokenUsage.outputTokens > 0) {
+      try {
+        localStorage.setItem(
+          TOKEN_KEY,
+          JSON.stringify(tokenUsage)
+        );
+      } catch (e) {
+        console.error('[ChatContext] Error saving token usage to localStorage:', e);
+      }
+    } else {
+      try {
+        localStorage.removeItem(TOKEN_KEY);
+      } catch (e) {
+        console.error('[ChatContext] Error clearing token usage from localStorage:', e);
+      }
+    }
+  }, [tokenUsage, isHydrated]);
+
   const addMessage = useCallback((message: Omit<Message, 'id' | 'timestamp'>) => {
     const newMessage: Message = {
       ...message,
@@ -145,9 +197,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         const updatedMessage = { 
           ...lastMessage, 
           content: updatedContent,
-          // Update contributing agents if provided
-          ...(contributingAgents && contributingAgents.length > 0 ? { contributingAgents } : {}),
-          ...(contributingModels && contributingModels.length > 0 ? { contributingModels } : {})
+          // Always update contributing agents/models (even if empty) to clear previous values
+          contributingAgents: contributingAgents || [],
+          contributingModels: contributingModels || []
         };
         const newMessages = [...prev.slice(0, -1), updatedMessage];
         console.log('[ChatContext] Updated messages count:', newMessages.length);
@@ -173,7 +225,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const updateContributingAgents = useCallback((contributingAgents: string[]) => {
     setMessages((prev) => {
       const lastMessage = prev[prev.length - 1];
-      if (lastMessage && lastMessage.role === 'assistant' && contributingAgents.length > 0) {
+      if (lastMessage && lastMessage.role === 'assistant') {
         return [...prev.slice(0, -1), { ...lastMessage, contributingAgents }];
       }
       return prev;
@@ -183,16 +235,32 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const updateContributingModels = useCallback((contributingModels: string[]) => {
     setMessages((prev) => {
       const lastMessage = prev[prev.length - 1];
-      if (lastMessage && lastMessage.role === 'assistant' && contributingModels.length > 0) {
+      if (lastMessage && lastMessage.role === 'assistant') {
         return [...prev.slice(0, -1), { ...lastMessage, contributingModels }];
       }
       return prev;
     });
   }, []);
 
+  const updateTokenUsage = useCallback((usage: TokenUsage) => {
+    setTokenUsage(usage);
+  }, []);
+
+  const resetTokenUsage = useCallback(() => {
+    setTokenUsage({ inputTokens: 0, outputTokens: 0 });
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem(TOKEN_KEY);
+      } catch (e) {
+        console.error('[ChatContext] Error clearing token usage:', e);
+      }
+    }
+  }, []);
+
   const clearMessages = useCallback(() => {
     setMessages([]);
     setStreamingStatus(false);
+    resetTokenUsage();
     // Clear from localStorage too
     if (typeof window !== 'undefined') {
       try {
@@ -201,7 +269,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         console.error('[ChatContext] Error clearing localStorage:', e);
       }
     }
-  }, []);
+  }, [resetTokenUsage]);
 
   return (
     <ChatContext.Provider
@@ -213,7 +281,11 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         addMessage,
         updateStreamingMessage,
         updateContributingAgents,
+        updateContributingModels,
         setStreamingStatus,
+        tokenUsage,
+        updateTokenUsage,
+        resetTokenUsage,
         clearMessages,
       }}
     >

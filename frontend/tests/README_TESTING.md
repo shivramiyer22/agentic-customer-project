@@ -8,8 +8,8 @@ This frontend application uses **Jest** and **React Testing Library** for compre
 
 ### Setup Files
 
-- **`jest.config.js`**: Jest configuration with Next.js integration
-- **`jest.setup.js`**: Global test setup (mocks, matchers)
+- **`tests/jest/jest.config.js`**: Jest configuration with Next.js integration (also copied to root)
+- **`tests/jest/jest.setup.js`**: Global test setup (mocks, matchers) (also copied to root)
 - **`tests/utils/test-utils.tsx`**: Custom render function with providers
 
 ### Test Organization
@@ -100,7 +100,7 @@ jest.mock('@/context/ChatContext', () => ({
 - ✅ **Components**: 40/40 tests (100%) - Includes contributing agents and models display
 - ✅ **Layout**: 1/1 tests (100%)
 
-**Total: 78/78 tests passing (100%)**
+**Total: 81/81 tests passing (100%)**
 
 ### New Test Coverage (Contributing Models Feature)
 

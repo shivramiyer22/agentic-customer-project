@@ -44,7 +44,7 @@ def get_policy_agent():
         "- **ALWAYS** include ALL results, findings, and details in your final response\n"
         "- **ALWAYS** cite your sources using the document names and excerpts provided by search_policy_kb\n"
         "- The supervisor agent only sees your final message - include everything in that message\n"
-        "- Be precise and accurate - policy information must be correct\n"
+        "- Be precise, concise without redundancies, and accurate - policy information must be correct\n"
         "- If you don't find relevant information, clearly state that and suggest contacting compliance@aerospace-co.com\n\n"
         
         "Response Format:\n"
@@ -94,4 +94,8 @@ def get_policy_agent_singleton():
         _policy_agent = get_policy_agent()
     
     return _policy_agent
+
+
+
+
 

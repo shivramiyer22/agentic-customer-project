@@ -126,19 +126,19 @@ def create_guide():
     story.append(Paragraph("• Synthesizes responses from multiple agents", normal_style))
     story.append(Spacer(1, 0.2*inch))
     
-    story.append(Paragraph("2.2 Policy & Compliance Agent", subheading_style))
+    story.append(Paragraph("2.2 Policy Tool Agent", subheading_style))
     story.append(Paragraph("• Handles FAA/EASA regulations and company policies", normal_style))
     story.append(Paragraph("• Uses Pure CAG (Cached Augmented Generation)", normal_style))
     story.append(Paragraph("• Fast, consistent responses from static policy documents", normal_style))
     story.append(Spacer(1, 0.2*inch))
     
-    story.append(Paragraph("2.3 Technical Support Agent", subheading_style))
+    story.append(Paragraph("2.3 Technical Tool Agent", subheading_style))
     story.append(Paragraph("• Handles technical documentation and bug reports", normal_style))
     story.append(Paragraph("• Uses Pure RAG (Retrieval Augmented Generation)", normal_style))
     story.append(Paragraph("• Dynamic knowledge base retrieval", normal_style))
     story.append(Spacer(1, 0.2*inch))
     
-    story.append(Paragraph("2.4 Billing Support Agent", subheading_style))
+    story.append(Paragraph("2.4 Billing Tool Agent", subheading_style))
     story.append(Paragraph("• Handles invoices, pricing, and contracts", normal_style))
     story.append(Paragraph("• Uses Hybrid RAG/CAG strategy", normal_style))
     story.append(Paragraph("• Combines dynamic billing data with cached policy info", normal_style))

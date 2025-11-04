@@ -134,3 +134,7 @@ def format_technical_context(docs: List[Document], query: str) -> str:
     
     return "\n".join(formatted_parts)
 
+
+
+
+

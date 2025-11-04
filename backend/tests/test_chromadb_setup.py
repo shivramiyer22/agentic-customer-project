@@ -5,8 +5,8 @@ Test script to verify ChromaDB setup and three collections are created successfu
 import sys
 import os
 
-# Add app directory to path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Add app directory to path (we're now in backend/tests/, so go up one level to backend/)
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
     from app.retrieval.chroma_client import get_chroma_client, initialize_collections

@@ -213,11 +213,11 @@ def get_supervisor_agent():
         "to the appropriate specialized worker agent using the available tools.\n\n"
         
         "Available Worker Agents:\n"
-        "1. **billing_tool**: Use for billing inquiries, pricing questions, contract terms, invoices, "
+        "1. **billing_tool** (Billing Tool Agent): Use for billing inquiries, pricing questions, contract terms, invoices, "
         "payment plans, refunds, or billing-related account issues.\n"
-        "2. **technical_tool**: Use for technical questions, component specifications, bug reports, "
+        "2. **technical_tool** (Technical Tool Agent): Use for technical questions, component specifications, bug reports, "
         "technical manuals, troubleshooting, engineering questions, or system documentation.\n"
-        "3. **policy_tool**: Use for regulatory compliance questions, FAA/EASA regulations, DFARs policies, "
+        "3. **policy_tool** (Policy Tool Agent): Use for regulatory compliance questions, FAA/EASA regulations, DFARs policies, "
         "data governance, customer support policies, terms of service, privacy policies, or legal compliance.\n\n"
         
         "Routing Guidelines:\n"
@@ -238,26 +238,79 @@ def get_supervisor_agent():
         "- Be concise and professional in your responses\n"
         "- Acknowledge the customer's inquiry and provide helpful guidance\n"
         "- Combine responses from multiple worker agents when needed to fully answer the query\n"
-        "- If routing to multiple worker agents, synthesize their responses into a coherent answer"
+        "- If routing to multiple worker agents, synthesize their responses into a coherent answer\n"
+        "- **CRITICAL**: When communicating with users, always refer to the specialists by their proper names: "
+        "'Billing Tool Agent' (not 'Billing Tool'), 'Technical Tool Agent' (not 'Technical Tool'), "
+        "and 'Policy Tool Agent' (not 'Policy Tool'). Use these full names when describing what each specialist can do."
     )
     
+    # Try to initialize Bedrock model with bearer token if available
+    # Use ONLY AWS_BEARER_TOKEN_BEDROCK - do not use AWS_ACCESS_KEY_ID
+    bedrock_model = None
+    if config.AWS_BEARER_TOKEN_BEDROCK:
+        try:
+            from langchain_aws import ChatBedrock
+            app_logger.info("Initializing Bedrock model with AWS_BEARER_TOKEN_BEDROCK authentication...")
+            
+            # Initialize Bedrock model with bearer token ONLY
+            # Use AWS_BEARER_TOKEN_BEDROCK as both access_key_id and secret_access_key
+            # Do NOT use AWS_ACCESS_KEY_ID when bearer token is available
+            bedrock_model = ChatBedrock(
+                model_id="anthropic.claude-3-haiku-20240307-v1:0",
+                region_name=config.AWS_REGION,
+                aws_access_key_id=config.AWS_BEARER_TOKEN_BEDROCK,
+                aws_secret_access_key=config.AWS_BEARER_TOKEN_BEDROCK,
+                credentials_profile_name=None,
+            )
+            
+            # Test the Bedrock connection by making a simple invoke call
+            # This will fail if authentication is invalid, allowing us to fall back to OpenAI
+            try:
+                app_logger.info("Testing Bedrock connection...")
+                test_response = bedrock_model.invoke("test")
+                app_logger.info("Bedrock model initialized and connection tested successfully with AWS_BEARER_TOKEN_BEDROCK")
+            except Exception as auth_error:
+                # Authentication failed - fall back to OpenAI
+                app_logger.warning(f"Bedrock authentication failed: {auth_error}")
+                app_logger.warning("Falling back to OpenAI model for supervisor agent")
+                bedrock_model = None
+                
+        except ImportError:
+            app_logger.warning("langchain-aws not available, falling back to OpenAI")
+            bedrock_model = None
+        except Exception as e:
+            app_logger.warning(f"Failed to initialize Bedrock with AWS_BEARER_TOKEN_BEDROCK: {e}, falling back to OpenAI")
+            bedrock_model = None
+    
+    # Create supervisor agent - use Bedrock if available, otherwise use OpenAI
     try:
-        # Create supervisor agent using create_agent() from langchain.agents
-        # Using AWS Bedrock model as specified in requirements
-        supervisor = create_agent(
-            model=config.AWS_BEDROCK_MODEL,  # "bedrock:claude-3-haiku" or similar
-            tools=[detect_emergency, billing_tool, technical_tool, policy_tool],
-            system_prompt=supervisor_prompt,
-            checkpointer=checkpointer,
-            name="supervisor_agent"  # Descriptive name as required
-        )
-        
-        app_logger.info("Supervisor agent created successfully")
-        return supervisor
-        
+        if bedrock_model:
+            # Use Bedrock model
+            supervisor = create_agent(
+                model=bedrock_model,
+                tools=[detect_emergency, billing_tool, technical_tool, policy_tool],
+                system_prompt=supervisor_prompt,
+                checkpointer=checkpointer,
+                name="supervisor_agent"
+            )
+            app_logger.info("Supervisor agent created successfully with AWS Bedrock")
+            return supervisor
+        else:
+            # Fallback to OpenAI model
+            app_logger.warning("Using OpenAI model for supervisor agent (Bedrock not available or connection failed)")
+            supervisor = create_agent(
+                model="openai:gpt-4o-mini",
+                tools=[detect_emergency, billing_tool, technical_tool, policy_tool],
+                system_prompt=supervisor_prompt,
+                checkpointer=checkpointer,
+                name="supervisor_agent"
+            )
+            app_logger.info("Supervisor agent created with OpenAI fallback")
+            return supervisor
+            
     except Exception as e:
         app_logger.error(f"Error creating supervisor agent: {e}")
-        # Fallback to OpenAI model if Bedrock is not available
+        # Final fallback to OpenAI if agent creation fails
         app_logger.warning("Falling back to OpenAI model for supervisor agent")
         try:
             supervisor = create_agent(

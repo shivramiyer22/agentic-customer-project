@@ -18,6 +18,8 @@ export function useChat() {
     updateContributingAgents,
     updateContributingModels,
     setStreamingStatus,
+    tokenUsage,
+    updateTokenUsage,
     clearMessages,
   } = useChatContext();
   
@@ -41,10 +43,12 @@ export function useChat() {
         content: content.trim(),
       });
 
-      // Add placeholder assistant message for streaming
+      // Add placeholder assistant message for streaming (clear contributing agents/models)
       addMessage({
         role: 'assistant',
         content: '',
+        contributingAgents: [],
+        contributingModels: [],
       });
 
       setStreamingStatus(true);
@@ -62,26 +66,65 @@ export function useChat() {
           // Handle streaming message
           console.log('[useChat] Received message:', message);
           
-          if (message.content && message.content.trim()) {
-            console.log('[useChat] Updating streaming message with content:', message.content.substring(0, 100));
-            // Extract contributing agents from metadata
-            const contributingAgents = message.metadata?.contributing_agents || [];
-            const contributingModels = message.metadata?.contributing_models || [];
-            console.log('[useChat] Contributing agents:', contributingAgents);
-            console.log('[useChat] Contributing models:', contributingModels);
-            // The backend sends full accumulated content, so we replace it
-            updateStreamingMessage(message.content, contributingAgents, contributingModels);
-          } else if (message.done) {
-            // Final update with contributing agents if provided
-            if (message.metadata?.contributing_agents) {
-              const contributingAgents = message.metadata.contributing_agents;
+          // Ensure message is an object, not a string
+          let parsedMessage = message;
+          if (typeof message === 'string') {
+            try {
+              parsedMessage = JSON.parse(message);
+            } catch (e) {
+              console.error('[useChat] Failed to parse message string:', e);
+              // If it's a plain string, treat it as content
+              if (message && message.trim()) {
+                updateStreamingMessage(message);
+                return;
+              }
+              return;
+            }
+          }
+          
+          // Ensure we have a valid message object
+          if (!parsedMessage || typeof parsedMessage !== 'object') {
+            console.warn('[useChat] Invalid message format:', parsedMessage);
+            return;
+          }
+          
+          const tokenUsageMetadata = parsedMessage.metadata?.token_usage;
+          if (tokenUsageMetadata) {
+            const inputTokensTotal = Number(tokenUsageMetadata.input_tokens_total) || 0;
+            const outputTokensTotal = Number(tokenUsageMetadata.output_tokens_total) || 0;
+            updateTokenUsage({
+              inputTokens: inputTokensTotal,
+              outputTokens: outputTokensTotal,
+            });
+          }
+
+          // Handle content chunks
+          if (parsedMessage.content !== undefined && parsedMessage.content !== null) {
+            const contentStr = String(parsedMessage.content);
+            if (contentStr.trim()) {
+              console.log('[useChat] Updating streaming message with content:', contentStr.substring(0, 100));
+              // Extract contributing agents from metadata
+              const contributingAgents = parsedMessage.metadata?.contributing_agents || [];
+              const contributingModels = parsedMessage.metadata?.contributing_models || [];
+              console.log('[useChat] Contributing agents:', contributingAgents);
+              console.log('[useChat] Contributing models:', contributingModels);
+              // The backend sends full accumulated content, so we replace it
+              updateStreamingMessage(contentStr, contributingAgents, contributingModels);
+            }
+          }
+          
+          // Handle done signal (only metadata update, don't overwrite content)
+          if (parsedMessage.done === true) {
+            // Final update with contributing agents if provided (without changing content)
+            if (parsedMessage.metadata?.contributing_agents) {
+              const contributingAgents = parsedMessage.metadata.contributing_agents;
               console.log('[useChat] Final contributing agents from done signal:', contributingAgents);
               // Update the last message with contributing agents using context function
               updateContributingAgents(contributingAgents);
             }
             
-            if (message.metadata?.contributing_models) {
-              const contributingModels = message.metadata.contributing_models;
+            if (parsedMessage.metadata?.contributing_models) {
+              const contributingModels = parsedMessage.metadata.contributing_models;
               console.log('[useChat] Final contributing models from done signal:', contributingModels);
               // Update the last message with contributing models using context function
               updateContributingModels(contributingModels);
@@ -89,15 +132,6 @@ export function useChat() {
             console.log('[useChat] Stream done signal received');
             // Ensure streaming status is updated
             setStreamingStatus(false);
-          } else {
-            console.log('[useChat] Message received but no content:', message);
-          }
-          
-          // Handle metadata (agent, sources)
-          if (message.metadata) {
-            // Update last message with metadata
-            // This will be handled in the context update
-            console.log('[useChat] Message metadata:', message.metadata);
           }
         },
         (error: Error) => {
@@ -131,6 +165,7 @@ export function useChat() {
       updateContributingAgents,
       updateContributingModels,
       setStreamingStatus,
+      updateTokenUsage,
     ]
   );
 
@@ -155,6 +190,7 @@ export function useChat() {
     sendMessage,
     stopStreaming,
     resetChat,
+    tokenUsage,
   };
 }
 

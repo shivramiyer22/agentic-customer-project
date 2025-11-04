@@ -69,7 +69,7 @@ describe('MessageList component', () => {
           content: 'Response', 
           role: 'assistant', 
           agent: 'supervisor',
-          contributingAgents: ['Technical Support Agent', 'Policy & Compliance Agent']
+          contributingAgents: ['Technical Tool Agent', 'Policy Tool Agent']
         })
       }, [addMessage])
       
@@ -83,11 +83,11 @@ describe('MessageList component', () => {
     }, { timeout: 3000 })
 
     await waitFor(() => {
-      expect(screen.getByText(/Contributing Agents:/i)).toBeInTheDocument()
+      expect(screen.getByText(/Contributing Agent Calls:/i)).toBeInTheDocument()
     }, { timeout: 3000 })
 
-    expect(screen.getByText(/Technical Support Agent/i)).toBeInTheDocument()
-    expect(screen.getByText(/Policy & Compliance Agent/i)).toBeInTheDocument()
+    expect(screen.getByText(/Technical Tool Agent/i)).toBeInTheDocument()
+    expect(screen.getByText(/Policy Tool Agent/i)).toBeInTheDocument()
   })
 
   it('should display contributing models when present', async () => {
@@ -125,7 +125,7 @@ describe('MessageList component', () => {
     }, { timeout: 5000 })
 
     await waitFor(() => {
-      expect(screen.getByText(/Contributing Models:/i)).toBeInTheDocument()
+      expect(screen.getByText(/Contributing Model Calls:/i)).toBeInTheDocument()
     }, { timeout: 5000 })
 
     expect(screen.getByText(/AWS Bedrock Claude 3 Haiku/i)).toBeInTheDocument()
@@ -149,7 +149,7 @@ describe('MessageList component', () => {
               content: 'Response', 
               role: 'assistant', 
               agent: 'supervisor',
-              contributingAgents: ['Technical Support Agent'],
+              contributingAgents: ['Technical Tool Agent'],
               contributingModels: ['AWS Bedrock Claude 3 Haiku', 'OpenAI gpt-4o-mini']
             })
           }
@@ -168,11 +168,11 @@ describe('MessageList component', () => {
     }, { timeout: 5000 })
 
     await waitFor(() => {
-      expect(screen.getByText(/Contributing Agents:/i)).toBeInTheDocument()
+      expect(screen.getByText(/Contributing Agent Calls:/i)).toBeInTheDocument()
     }, { timeout: 5000 })
 
-    expect(screen.getByText(/Contributing Models:/i)).toBeInTheDocument()
-    expect(screen.getByText(/Technical Support Agent/i)).toBeInTheDocument()
+    expect(screen.getByText(/Contributing Model Calls:/i)).toBeInTheDocument()
+    expect(screen.getByText(/Technical Tool Agent/i)).toBeInTheDocument()
     expect(screen.getByText(/AWS Bedrock Claude 3 Haiku/i)).toBeInTheDocument()
   })
 
@@ -184,8 +184,8 @@ describe('MessageList component', () => {
     })
 
     // Should not show contributing agents or models section
-    expect(screen.queryByText(/Contributing Agents:/i)).not.toBeInTheDocument()
-    expect(screen.queryByText(/Contributing Models:/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Contributing Agent Calls:/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Contributing Model Calls:/i)).not.toBeInTheDocument()
   })
 })
 

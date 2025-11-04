@@ -34,3 +34,7 @@ def test_checkpointer_type():
     assert hasattr(checkpointer, 'put')
     assert hasattr(checkpointer, 'get')
 
+
+
+
+

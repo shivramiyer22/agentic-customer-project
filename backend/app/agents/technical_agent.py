@@ -97,3 +97,7 @@ def get_technical_agent_singleton():
     
     return _technical_agent
 
+
+
+
+

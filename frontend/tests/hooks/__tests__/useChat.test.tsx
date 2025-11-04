@@ -85,7 +85,7 @@ describe('useChat hook', () => {
       const message = {
         content: 'Response',
         metadata: {
-          contributing_agents: ['Technical Support Agent'],
+          contributing_agents: ['Technical Tool Agent'],
           contributing_models: ['AWS Bedrock Claude 3 Haiku']
         }
       }
@@ -113,7 +113,7 @@ describe('useChat hook', () => {
       const message = {
         content: 'Response',
         metadata: {
-          contributing_agents: ['Policy & Compliance Agent'],
+          contributing_agents: ['Policy Tool Agent'],
           contributing_models: ['AWS Bedrock Claude 3 Haiku', 'OpenAI gpt-4o-mini']
         }
       }
@@ -140,7 +140,7 @@ describe('useChat hook', () => {
       // Send done signal with metadata
       callbacks.onDone?.({
         metadata: {
-          contributing_agents: ['Billing Support Agent'],
+          contributing_agents: ['Billing Tool Agent'],
           contributing_models: ['AWS Bedrock Claude 3 Haiku', 'OpenAI gpt-4o-mini']
         }
       })

@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 import time
 from contextlib import asynccontextmanager
 
-from app.routers import health, collections, upload, sessions, chat
+from app.routers import health, collections, upload, sessions, chat, feedback
 from app.retrieval.chroma_client import initialize_knowledge_bases
 from app.utils.config import config
 from app.utils.logger import app_logger
@@ -80,6 +80,7 @@ app.include_router(collections.router)
 app.include_router(upload.router)
 app.include_router(sessions.router)
 app.include_router(chat.router)
+app.include_router(feedback.router)
 
 
 @app.get("/")

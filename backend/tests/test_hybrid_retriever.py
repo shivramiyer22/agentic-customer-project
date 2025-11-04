@@ -145,7 +145,7 @@ def test_format_billing_context_source_citations():
 
 
 def test_search_billing_kb_default_k():
-    """Test that search_billing_kb uses default k=3"""
+    """Test that search_billing_kb uses default k=5 (updated from k=3 for comprehensive retrieval)"""
     with patch('app.retrieval.hybrid_retriever.get_chroma_client') as mock_get_client:
         mock_client = Mock()
         mock_collection = Mock()
@@ -157,7 +157,7 @@ def test_search_billing_kb_default_k():
         
         mock_collection.similarity_search.assert_called_once()
         call_kwargs = mock_collection.similarity_search.call_args[1]
-        assert call_kwargs.get('k', 3) == 3
+        assert call_kwargs.get('k', 5) == 5
 
 
 def test_search_billing_kb_custom_k():

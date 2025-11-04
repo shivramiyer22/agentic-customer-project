@@ -41,25 +41,52 @@ export default function MessageList() {
 
   if (messages.length === 0) {
      return (
-      <div className="flex-1 flex items-center justify-center px-6 py-12">
-        <div className="text-center bg-primary text-white rounded-3xl shadow-2xl px-10 py-16 space-y-6 border border-white/40 max-w-3xl">
-          <p className="text-5xl font-extrabold tracking-wide drop-shadow">
-            Welcome to the Aerospace Company Customer Service Agent
-          </p>
-          <p className="text-2xl font-semibold opacity-90">
-            Ask a question about billing, technical support, or policy compliance
-          </p>
+      <div className="flex-1 flex items-center justify-center py-6 max-h-[33vh]">
+        <div className="w-full max-w-full mx-auto px-4" style={{ paddingLeft: '144px', paddingRight: '16px' }}>
+          <div className="w-full flex justify-center">
+            <div className="text-center bg-primary text-white rounded-3xl shadow-2xl px-10 py-12 space-y-4 border border-white/40 max-w-3xl">
+              <p className="text-4xl font-extrabold tracking-wide drop-shadow">
+                Welcome to the Aerospace Company Customer Service Agent
+              </p>
+              <p className="text-xl font-semibold opacity-90">
+                Ask a question about billing, technical support, or policy compliance
+              </p>
+              <p className="text-xs font-normal italic opacity-70 mt-6 pt-4 border-t border-white/30">
+                AI generated output may not be accurate or complete. Always verify output before using.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-6 flex justify-center">
-      <div className="w-full max-w-6xl space-y-6">
+    <div className="flex-1 overflow-y-auto py-6">
+      <div className="w-full max-w-full mx-auto px-4" style={{ paddingLeft: '144px', paddingRight: '16px' }}>
+        <div className="max-w-[93%] ml-auto mr-auto space-y-6">
         {messages.map((message) => {
           const isUser = message.role === 'user';
-          const formattedContent = message.content?.trim() || '';
+          // Ensure content is a string, not an object or other type
+          let formattedContent: string = '';
+          if (message.content) {
+            if (typeof message.content === 'string') {
+              formattedContent = message.content;
+            } else if (typeof message.content === 'object' && message.content !== null) {
+              // If content is an object, try to extract string value
+              if ('content' in message.content && typeof (message.content as any).content === 'string') {
+                formattedContent = (message.content as any).content;
+              } else {
+                // Otherwise, log warning and use empty string
+                console.warn('[MessageList] Content is an object without string value:', message.content);
+                formattedContent = '';
+              }
+            } else {
+              // Convert other types to string
+              formattedContent = String(message.content);
+            }
+          }
+          formattedContent = formattedContent.trim();
           const timestamp = message.timestamp.toLocaleTimeString();
           
           // Debug logging for assistant messages
@@ -72,7 +99,7 @@ export default function MessageList() {
           }
 
           return (
-            <div key={message.id} className="flex justify-center">
+            <div key={message.id} className="w-full">
               <div
                 className={cn(
                   'w-full rounded-2xl shadow-lg border px-6 py-5 space-y-3 transition-all',
@@ -105,25 +132,30 @@ export default function MessageList() {
                 <p className="text-base leading-relaxed whitespace-pre-wrap break-words">
                   {formattedContent || (isUser ? '—' : (streamingStatus ? 'Generating response...' : 'No response received'))}
                 </p>
-                {/* Contributing Agents and Models display */}
+                {/* Contributing Agents and Models display - on same line with || separator */}
                 {!isUser && (message.contributingAgents && message.contributingAgents.length > 0 || message.contributingModels && message.contributingModels.length > 0) && (
-                  <div className="text-xs text-gray-500 mt-2 pt-2 border-t border-gray-200 space-y-1">
-                    {message.contributingAgents && message.contributingAgents.length > 0 && (
-                      <div>
-                        <span className="font-semibold">Contributing Agents:</span>{' '}
-                        <span className="text-gray-600">
-                          {message.contributingAgents.join(', ')}
+                  <div className="text-xs text-gray-500 mt-2 pt-2 border-t border-gray-200">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {message.contributingAgents && message.contributingAgents.length > 0 && (
+                        <span>
+                          <span className="font-bold">Contributing Agent Calls:</span>{' '}
+                          <span className="text-gray-600 font-normal">
+                            {message.contributingAgents.join(', ')}
+                          </span>
                         </span>
-                      </div>
-                    )}
-                    {message.contributingModels && message.contributingModels.length > 0 && (
-                      <div>
-                        <span className="font-semibold">Contributing Models:</span>{' '}
-                        <span className="text-gray-600">
-                          {message.contributingModels.join(', ')}
+                      )}
+                      {message.contributingAgents && message.contributingAgents.length > 0 && message.contributingModels && message.contributingModels.length > 0 && (
+                        <span className="text-gray-400 font-bold">||</span>
+                      )}
+                      {message.contributingModels && message.contributingModels.length > 0 && (
+                        <span>
+                          <span className="font-bold">Contributing Model Calls:</span>{' '}
+                          <span className="text-gray-600 font-normal">
+                            {message.contributingModels.join(', ')}
+                          </span>
                         </span>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -146,6 +178,7 @@ export default function MessageList() {
             </div>
           );
         })}
+        </div>
       </div>
     </div>
   );

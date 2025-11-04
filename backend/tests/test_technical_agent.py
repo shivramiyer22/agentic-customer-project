@@ -143,3 +143,7 @@ def test_technical_agent_error_handling():
         with pytest.raises(Exception):
             get_technical_agent()
 
+
+
+
+

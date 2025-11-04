@@ -17,17 +17,24 @@ export default function ChatPage() {
   return (
     <SessionProvider>
       <ChatProvider>
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <div className="flex-1 flex flex-col items-center overflow-hidden">
-            <div className="w-full flex-1 flex flex-col max-w-6xl px-4">
+        <div className="flex flex-col h-screen">
+          {/* Fixed Header */}
+          <div className="flex-shrink-0">
+            <Header />
+          </div>
+          
+          {/* Scrollable Center Pane - Messages */}
+          <div className="flex-1 flex flex-col items-center overflow-y-auto">
+            <div className="w-full flex-1 flex flex-col max-w-[86.4rem]">
               <MessageList />
               <StreamingResponse />
             </div>
-            <div className="w-full flex flex-col">
-              <InputBox />
-              <SatisfactionFeedback />
-            </div>
+          </div>
+          
+          {/* Fixed Bottom Pane - Input Box and Feedback */}
+          <div className="flex-shrink-0 w-full flex flex-col">
+            <InputBox />
+            <SatisfactionFeedback />
           </div>
         </div>
       </ChatProvider>
