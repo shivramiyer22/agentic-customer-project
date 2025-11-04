@@ -7,7 +7,7 @@ Last Verified: November 2025
 """
 
 from typing import List
-from langchain_openai import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings  # pyright: ignore[reportMissingImports]
 from app.utils.config import config
 from app.utils.logger import app_logger
 

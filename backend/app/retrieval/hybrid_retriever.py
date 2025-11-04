@@ -49,8 +49,50 @@ def search_billing_kb(
         
     Returns:
         Formatted context string with billing information and source citations
+        
+    REGRESSION WARNING (2025-11-04):
+    ================================
+    CRITICAL: The k parameter MUST NOT be changed without ensuring the regression test passes.
+    
+    Test: test_most_valuable_customer_query_retrieves_all_invoices in test_hybrid_retriever.py
+    
+    This test ensures that comparative queries like "Which company is our most valuable 
+    customer based on invoiced amount" retrieve ALL invoices needed for accurate comparison.
+    
+    History:
+    - 2025-11-04: Regression occurred when k=5 was insufficient for comparative queries.
+      The query failed because only 1-2 invoices were retrieved instead of all 4 invoices.
+      Root cause: Auto-map changes added Tech-Bug-Report files to billing_knowledge_base,
+      increasing document count from ~13 to ~48 documents, making k=5 insufficient.
+    - Fix: Added comparative query detection to increase k to at least 20 for queries
+      containing keywords like "most valuable", "highest", "which company", etc.
+    
+    Requirement:
+    - DO NOT change k parameter or default value without ensuring this test passes.
+    - DO NOT remove comparative query detection logic without ensuring this test passes.
+    - If this test fails, the fix must restore full functionality before merging.
     """
     try:
+        # CRITICAL: Comparative query detection to ensure all invoices are retrieved
+        # This prevents regression where "most valuable customer" queries fail due to
+        # incomplete invoice retrieval. DO NOT remove or modify without ensuring
+        # test_most_valuable_customer_query_retrieves_all_invoices passes.
+        query_lower = query.lower()
+        comparative_keywords = [
+            "most valuable", "highest", "largest", "biggest", "top",
+            "most expensive", "greatest", "maximum", "all companies",
+            "all customers", "all invoices", "compare", "comparison",
+            "which company", "which customer", "sum", "total", "aggregate"
+        ]
+        is_comparative = any(keyword in query_lower for keyword in comparative_keywords)
+        
+        # For comparative queries, retrieve more documents to ensure all invoices are included
+        # CRITICAL: k >= 20 is required for comparative queries to retrieve all invoices.
+        # DO NOT change this threshold without ensuring test_most_valuable_customer_query_retrieves_all_invoices passes.
+        if is_comparative:
+            k = max(k, 20)  # Retrieve at least 20 documents for comparative queries
+            app_logger.info(f"Comparative query detected, increasing k to {k} for comprehensive results")
+        
         # Get ChromaDB client
         client = get_chroma_client()
         

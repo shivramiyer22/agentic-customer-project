@@ -133,7 +133,7 @@ async def generate_agent_stream(supervisor_agent, message: str, session_id: str)
         accumulated_content = ""
         contributing_agents = []  # Track which worker agents contributed (preserve order)
         contributing_models = []  # Track which LLM models were used (preserve order)
-        processed_tool_call_ids = set()  # Track which tool_calls we've already processed
+        processed_tool_call_ids = set()  # Track which tool_calls we've already processed in THIS stream
         processed_token_message_ids: Set[str] = set()  # Track token usage updates
         session_token_stats = SESSION_TOKEN_STATS[session_id]
         tool_name_to_agent = {
@@ -149,7 +149,13 @@ async def generate_agent_stream(supervisor_agent, message: str, session_id: str)
         # Supervisor model (AWS Bedrock Claude 3 Haiku) - add first as it's always invoked first
         from app.utils.config import config
         supervisor_model = config.AWS_BEDROCK_MODEL.replace("bedrock:", "AWS Bedrock ").replace("-", " ").title()
-        contributing_models.append(supervisor_model)
+        
+        # CRITICAL: Reset contributing agents/models for THIS query/stream
+        # This ensures each query starts fresh and doesn't include agents from previous queries
+        contributing_agents.clear()
+        contributing_models.clear()
+        processed_tool_call_ids.clear()
+        contributing_models.append(supervisor_model)  # Add supervisor model after clearing
         
         async for chunk in supervisor_agent.astream(
             {"messages": input_messages},
@@ -173,6 +179,26 @@ async def generate_agent_stream(supervisor_agent, message: str, session_id: str)
                         messages = chunk.messages
                 
                 if messages:
+                    # CRITICAL: Only process messages from THIS query/stream, not from conversation history
+                    # The conversation state includes ALL messages, but we only want messages from THIS stream
+                    # We identify messages from THIS stream by:
+                    # 1. Messages that appear AFTER the user's input message for THIS query
+                    # 2. Tool calls that haven't been processed in THIS stream (tracked by processed_tool_call_ids)
+                    
+                    # Find the index of the user's input message for THIS query
+                    # The last user message should be the one for THIS query
+                    user_message_index = -1
+                    for i in range(len(messages) - 1, -1, -1):
+                        msg = messages[i]
+                        msg_type = type(msg).__name__
+                        if msg_type == "HumanMessage" or (hasattr(msg, "content") and isinstance(msg.content, str) and msg.content == message):
+                            user_message_index = i
+                            break
+                    
+                    # Only process messages AFTER the user's input message (messages from THIS stream)
+                    # If we can't find the user message, process all messages (fallback)
+                    messages_to_process = messages[user_message_index + 1:] if user_message_index >= 0 else messages
+                    
                     # Update session token usage from message metadata
                     for msg in messages:
                         _update_session_token_usage(session_id, msg, processed_token_message_ids)
@@ -186,8 +212,9 @@ async def generate_agent_stream(supervisor_agent, message: str, session_id: str)
                         )
 
                     # Track tool calls to identify which agents contributed
-                    # Process only NEW tool_calls we haven't seen before to preserve order
-                    for msg in messages:
+                    # Process only NEW tool_calls from THIS stream we haven't seen before to preserve order
+                    # CRITICAL: Only process messages from THIS query, not from conversation history
+                    for msg in messages_to_process:
                         msg_type = type(msg).__name__
                         
                         # Track AIMessage with tool_calls to identify which tools were called

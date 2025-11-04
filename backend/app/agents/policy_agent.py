@@ -9,7 +9,7 @@ This module implements the Policy & Compliance Agent using Pure CAG retrieval st
 """
 
 from typing import Optional
-from langchain.agents import create_agent
+from langchain.agents import create_agent  # pyright: ignore[reportMissingImports]
 from app.retrieval.cag_retriever import search_policy_kb
 from app.state.conversation_state import get_checkpointer
 from app.utils.config import config

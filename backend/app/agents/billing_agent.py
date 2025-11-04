@@ -9,7 +9,7 @@ This module implements the Billing Support Agent using Hybrid RAG/CAG retrieval 
 """
 
 from typing import Optional
-from langchain.agents import create_agent
+from langchain.agents import create_agent  # pyright: ignore[reportMissingImports]
 from app.retrieval.hybrid_retriever import search_billing_kb, get_cached_policy_info
 from app.state.conversation_state import get_checkpointer
 from app.utils.config import config
@@ -46,6 +46,12 @@ def get_billing_agent():
         "- **ALWAYS** cite your sources using the document names and excerpts provided by the tools\n"
         "- The supervisor agent only sees your final message - include everything in that message\n"
         "- Be precise, concise without redundancies, and accurate - billing information must be correct\n"
+        "- **FOR COMPARATIVE QUERIES** (e.g., 'highest', 'most valuable', 'which company'):\n"
+        "  * Review ALL retrieved invoices carefully\n"
+        "  * Calculate totals for each company by summing all their invoices\n"
+        "  * Compare the totals to identify the highest value\n"
+        "  * Provide a clear answer with specific amounts and company names\n"
+        "  * Example: If ABC Company has INV-001 ($55,000) and INV-004 ($357,500), total = $412,500\n"
         "- If you don't find relevant information, clearly state that and suggest contacting billing@aerospace-co.com\n\n"
         
         "Hybrid RAG/CAG Strategy:\n"

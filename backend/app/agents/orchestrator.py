@@ -10,8 +10,8 @@ where the supervisor routes queries to specialized worker agents as tools.
 """
 
 from typing import Optional
-from langchain.agents import create_agent
-from langchain_core.tools import tool
+from langchain.agents import create_agent  # pyright: ignore[reportMissingImports]
+from langchain_core.tools import tool  # pyright: ignore[reportMissingImports]
 from app.state.conversation_state import get_checkpointer
 from app.agents.policy_agent import get_policy_agent_singleton
 from app.agents.technical_agent import get_technical_agent_singleton
@@ -208,9 +208,15 @@ def get_supervisor_agent():
     
     # Supervisor system prompt emphasizing query routing
     supervisor_prompt = (
-        "You are the supervisor agent for The Aerospace Company Customer Service system. "
+        "You are the Supervisor Agent for The Aerospace Company Customer Service system. "
         "Your primary responsibility is to analyze incoming customer queries and route them "
         "to the appropriate specialized worker agent using the available tools.\n\n"
+        
+        "**CRITICAL - Self-Identification:**\n"
+        "- When users ask who they are connecting with, or ask about your identity, you MUST respond: "
+        "'You are connecting with the Supervisor Agent for the Aerospace Company Customer Service system.'\n"
+        "- Always refer to yourself as 'Supervisor Agent' (not 'Aerospace Company Customer Service System' or 'customer service system').\n"
+        "- When introducing yourself or describing your role, always say 'I am the Supervisor Agent' or 'As the Supervisor Agent'.\n\n"
         
         "Available Worker Agents:\n"
         "1. **billing_tool** (Billing Tool Agent): Use for billing inquiries, pricing questions, contract terms, invoices, "
@@ -249,7 +255,7 @@ def get_supervisor_agent():
     bedrock_model = None
     if config.AWS_BEARER_TOKEN_BEDROCK:
         try:
-            from langchain_aws import ChatBedrock
+            from langchain_aws import ChatBedrock  # pyright: ignore[reportMissingImports]
             app_logger.info("Initializing Bedrock model with AWS_BEARER_TOKEN_BEDROCK authentication...")
             
             # Initialize Bedrock model with bearer token ONLY
